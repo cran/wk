@@ -24,7 +24,11 @@ print.wk_vctr <- function(x, ...) {
 #' @export
 c.wk_vctr <- function(...) {
   result <- new_wk_vctr(NextMethod(), ..1)
-  validator <- match.fun(paste0("validate_", class(..1)[1]))
+  validator <- get(
+    paste0("validate_", class(..1)[1]),
+    mode = "function",
+    envir = asNamespace("wk")
+  )
   validator(result)
   result
 }
@@ -44,7 +48,26 @@ new_wk_vctr <- function(x, template) {
   structure(x, class = unique(class(template)))
 }
 
-stop_for_problems <- function(problems) {
+parse_base <- function(x, problems) {
+  x[!is.na(problems)] <- x[NA_integer_]
+  problems_df <- action_for_problems(
+    problems,
+    function(msg) warning(paste0(msg, '\nSee attr(, "problems") for details.'), call. = FALSE)
+  )
+
+  if (nrow(problems_df) > 0) {
+    problems_df$actual <- unclass(x)[problems_df$row]
+    attr(x, "problems") <- problems_df
+  }
+
+  x
+}
+
+stop_for_problems <- function(problems)  {
+  action_for_problems(problems, stop, call. = FALSE)
+}
+
+action_for_problems <- function(problems, action, ...) {
   if (any(!is.na(problems))) {
     n_problems <- sum(!is.na(problems))
     summary_problems <- utils::head(which(!is.na(problems)))
@@ -60,15 +83,21 @@ stop_for_problems <- function(problems) {
       )
     }
 
-    stop(
+    action(
       sprintf(
         "Encountered %s parse problem%s:\n%s",
         n_problems,
         if (n_problems == 1) "" else "s",
         problem_summary
       ),
-      call. = FALSE
+      ...
     )
   }
-  invisible(problems)
+
+  data.frame(
+    row = which(!is.na(problems)),
+    col = rep_len(NA_integer_, sum(!is.na(problems))),
+    expected = problems[!is.na(problems)],
+    stringsAsFactors = FALSE
+  )
 }

@@ -1,11 +1,11 @@
 
-#include "wk/geometry-debug-handler.h"
-#include "wk/wkb-reader.h"
-#include "wk/wkt-reader.h"
+#include "wk/geometry-debug-handler.hpp"
+#include "wk/wkb-reader.hpp"
+#include "wk/wkt-reader.hpp"
 
 #include <Rcpp.h>
-#include "wk/rcpp-io.h"
-#include "wk/sexp-reader.h"
+#include "wk/rcpp-io.hpp"
+#include "wk/rcpp-sexp-reader.hpp"
 using namespace Rcpp;
 
 void cpp_debug_base(WKReader& reader) {
@@ -41,7 +41,7 @@ void cpp_debug_wkt_streamer(CharacterVector input) {
 
 // [[Rcpp::export]]
 void cpp_debug_wksxp(List input) {
-  WKSEXPProvider provider(input);
-  WKSEXPReader reader(provider);
+  WKRcppSEXPProvider provider(input);
+  WKRcppSEXPReader reader(provider);
   cpp_debug_base(reader);
 }

@@ -1,12 +1,12 @@
 
-#include "wk/geometry-handler.h"
-#include "wk/wkb-reader.h"
-#include "wk/wkt-reader.h"
-#include "wk/wkt-streamer.h"
+#include "wk/geometry-handler.hpp"
+#include "wk/wkb-reader.hpp"
+#include "wk/wkt-reader.hpp"
+#include "wk/wkt-streamer.hpp"
 
 #include <Rcpp.h>
-#include "wk/rcpp-io.h"
-#include "wk/sexp-reader.h"
+#include "wk/rcpp-io.hpp"
+#include "wk/rcpp-sexp-reader.hpp"
 using namespace Rcpp;
 
 class WKMetaFoundException: public WKParseException {
@@ -18,31 +18,15 @@ public:
 class WKMetaCounter: public WKGeometryHandler {
 public:
   size_t nMeta;
-  WKMetaCounter(bool recursive): nMeta(0), recursive(recursive) {}
+  WKMetaCounter(): nMeta(0) {}
 
   void nextGeometryStart(const WKGeometryMeta& meta, uint32_t partId) {
     this->nMeta++;
-    if (!this->recursive) {
-      throw WKMetaFoundException();
-    }
   }
 
   void nextNull(size_t featureId) {
     this->nMeta++;
   }
-
-  // throwing exceptions results in recursive searches being much faster
-  // for small geometries
-  bool nextError(WKParseException& error, size_t featureId) {
-    if (error.code() == WKMetaFoundException::CODE_META_FOUND) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-private:
-  bool recursive;
 };
 
 
@@ -178,7 +162,7 @@ List cpp_meta_base(WKReader& reader, bool recursive) {
   size_t nMeta;
 
   if (recursive) {
-    WKMetaCounter counter(recursive);
+    WKMetaCounter counter;
     reader.setHandler(&counter);
     while (reader.hasNextFeature()) {
       checkUserInterrupt();
@@ -225,7 +209,7 @@ List cpp_meta_wkt_streamer(CharacterVector wkt, bool recursive) {
 
 // [[Rcpp::export]]
 List cpp_meta_wksxp(List wksxp, bool recursive) {
-  WKSEXPProvider provider(wksxp);
-  WKSEXPReader reader(provider);
+  WKRcppSEXPProvider provider(wksxp);
+  WKRcppSEXPReader reader(provider);
   return cpp_meta_base(reader, recursive);
 }

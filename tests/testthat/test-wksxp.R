@@ -3,6 +3,7 @@ test_that("wksxp class works", {
   x <- wksxp(wkt_translate_wksxp("POINT (40 10)"))
   expect_is(x, "wk_wksxp")
   expect_is(x, "wk_vctr")
+  expect_true(is_wk_wksxp(x))
   expect_output(print(x), "wk_wksxp")
   expect_match(as.character(x), "POINT")
 
@@ -20,6 +21,9 @@ test_that("wksxp class works", {
   expect_identical(rep(x, 2), c(x, x))
   expect_identical(rep_len(x, 2), c(x, x))
   expect_length(c(x, x), 2)
+
+  x[1] <- "POINT (11 12)"
+  expect_identical(x[1], as_wksxp("POINT (11 12)"))
 })
 
 test_that("as_wksxp() works", {
@@ -33,4 +37,7 @@ test_that("as_wksxp() works", {
   expect_identical(as_wksxp("SRID=44;POINT (40 10)"), x)
   expect_identical(as_wksxp(wkt("SRID=44;POINT (40 10)")), x)
   expect_identical(as_wksxp(as_wkb("SRID=44;POINT (40 10)")), x)
+
+  # default method
+  expect_identical(as_wksxp.default("POINT (11 12)"), as_wksxp("POINT (11 12)"))
 })

@@ -4,7 +4,7 @@
 #' @details
 #' The "wksxp" format is experimental, but was written as a way to
 #' make it possible for packages to generate [wkb()] vectors without
-#' needing to know C++. The format represents geometries as following:
+#' needing to use C++. The format represents geometries as following:
 #'
 #' - points are matrices with zero or one row
 #' - linestrings are matrices (one row per point)
@@ -22,7 +22,7 @@
 #' - `has_m`: use `TRUE` if there is an M coordinate
 #'    (may be omitted if false)
 #'
-#' This is similar to the [sf::sfc()] format, but the formats aren't
+#' This is similar to the [sf::st_sfc()] format, but the formats aren't
 #' interchangable.
 #'
 #' @param x A [list()] features (see details)
@@ -35,7 +35,7 @@
 #' @examples
 #' wksxp(wkt_translate_wksxp("POINT (20 10)"))
 #'
-wksxp <- function(x) {
+wksxp <- function(x = list()) {
   attributes(x) <- NULL
   wksxp <- new_wk_wksxp(x)
   validate_wk_wksxp(x)
@@ -44,8 +44,21 @@ wksxp <- function(x) {
 
 #' @rdname wksxp
 #' @export
+parse_wksxp <- function(x) {
+  attributes(x) <- NULL
+  parse_base(new_wk_wksxp(x), wksxp_problems(x))
+}
+
+#' @rdname wksxp
+#' @export
 as_wksxp <- function(x, ...) {
   UseMethod("as_wksxp")
+}
+
+#' @rdname wksxp
+#' @export
+as_wksxp.default <- function(x, ...) {
+  as_wksxp(as_wkb(x), ...)
 }
 
 #' @rdname wksxp
@@ -103,12 +116,18 @@ as_wksxp.wk_wkb <- function(x, ..., include_z = NULL, include_m = NULL, include_
 #'
 #' @export
 #'
-new_wk_wksxp <- function(x) {
+new_wk_wksxp <- function(x = list()) {
   if (typeof(x) != "list" || !is.null(attributes(x))) {
     stop("wksxp input must be a list without attributes",  call. = FALSE)
   }
 
-  structure(x, class = c("wk_wksxp", "wk_vctr"))
+  structure(x, class = c("wk_wksxp", "wk_vctr", "geovctr"))
+}
+
+#' @rdname new_wk_wksxp
+#' @export
+is_wk_wksxp <- function(x) {
+  inherits(x, "wk_wksxp")
 }
 
 #' @rdname new_wk_wksxp
@@ -119,6 +138,13 @@ validate_wk_wksxp <- function(x) {
   stop_for_problems(problems)
 
   invisible(x)
+}
+
+#' @export
+`[<-.wk_wksxp` <- function(x, i, value) {
+  x <- unclass(x)
+  x[i] <- as_wksxp(value)
+  new_wk_wksxp(x)
 }
 
 #' @export

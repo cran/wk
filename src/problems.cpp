@@ -1,11 +1,11 @@
 
-#include "wk/geometry-handler.h"
-#include "wk/wkb-reader.h"
-#include "wk/wkt-streamer.h"
+#include "wk/geometry-handler.hpp"
+#include "wk/wkb-reader.hpp"
+#include "wk/wkt-streamer.hpp"
 
 #include <Rcpp.h>
-#include "wk/rcpp-io.h"
-#include "wk/sexp-reader.h"
+#include "wk/rcpp-io.hpp"
+#include "wk/rcpp-sexp-reader.hpp"
 using namespace Rcpp;
 
 class WKValidator: public WKGeometryHandler {
@@ -51,7 +51,7 @@ Rcpp::CharacterVector cpp_problems_wkt(CharacterVector wkt) {
 
 // [[Rcpp::export]]
 Rcpp::CharacterVector cpp_problems_wksxp(List wksxp) {
-  WKSEXPProvider provider(wksxp);
-  WKSEXPReader reader(provider);
+  WKRcppSEXPProvider provider(wksxp);
+  WKRcppSEXPReader reader(provider);
   return cpp_problems_base(reader);
 }

@@ -1,11 +1,11 @@
 
-#include "wk/geometry-handler.h"
-#include "wk/wkb-reader.h"
-#include "wk/wkt-streamer.h"
+#include "wk/geometry-handler.hpp"
+#include "wk/wkb-reader.hpp"
+#include "wk/wkt-streamer.hpp"
 
 #include <Rcpp.h>
-#include "wk/rcpp-io.h"
-#include "wk/sexp-reader.h"
+#include "wk/rcpp-io.hpp"
+#include "wk/rcpp-sexp-reader.hpp"
 using namespace Rcpp;
 
 // I'm sure there's a more compact way to do this
@@ -228,8 +228,8 @@ List cpp_ranges_wkt(CharacterVector wkt, bool naRm, bool onlyFinite) {
 
 // [[Rcpp::export]]
 List cpp_ranges_wksxp(List wksxp, bool naRm, bool onlyFinite) {
-  WKSEXPProvider provider(wksxp);
-  WKSEXPReader reader(provider);
+  WKRcppSEXPProvider provider(wksxp);
+  WKRcppSEXPReader reader(provider);
   return cpp_ranges_base(reader, naRm, onlyFinite);
 }
 
@@ -270,7 +270,7 @@ List cpp_feature_ranges_wkt(CharacterVector wkt, bool naRm, bool onlyFinite) {
 
 // [[Rcpp::export]]
 List cpp_feature_ranges_wksxp(List wksxp, bool naRm, bool onlyFinite) {
-  WKSEXPProvider provider(wksxp);
-  WKSEXPReader reader(provider);
+  WKRcppSEXPProvider provider(wksxp);
+  WKRcppSEXPReader reader(provider);
   return cpp_feature_ranges_base(reader, naRm, onlyFinite);
 }

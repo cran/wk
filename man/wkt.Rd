@@ -2,18 +2,46 @@
 % Please edit documentation in R/wkt.R
 \name{wkt}
 \alias{wkt}
+\alias{parse_wkt}
 \alias{as_wkt}
+\alias{as_wkt.default}
 \alias{as_wkt.character}
 \alias{as_wkt.wk_wkt}
+\alias{as_wkt.wk_wkb}
+\alias{as_wkt.wk_wksxp}
 \title{Mark character vectors as well-known text}
 \usage{
-wkt(x)
+wkt(x = character())
+
+parse_wkt(x)
 
 as_wkt(x, ...)
+
+\method{as_wkt}{default}(x, ...)
 
 \method{as_wkt}{character}(x, ...)
 
 \method{as_wkt}{wk_wkt}(
+  x,
+  ...,
+  include_z = NULL,
+  include_m = NULL,
+  include_srid = NULL,
+  precision = NULL,
+  trim = NULL
+)
+
+\method{as_wkt}{wk_wkb}(
+  x,
+  ...,
+  include_z = NULL,
+  include_m = NULL,
+  include_srid = NULL,
+  precision = NULL,
+  trim = NULL
+)
+
+\method{as_wkt}{wk_wksxp}(
   x,
   ...,
   include_z = NULL,

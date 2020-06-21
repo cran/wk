@@ -90,7 +90,7 @@ is no value present in the original.}
 
 \item{trim}{Trim unnecessary zeroes in the output?}
 
-\item{endian}{For WKB writing, 0 for big endian, 1 for little endinan.
+\item{endian}{For WKB writing, 0 for big endian, 1 for little endian.
 Defaults to \code{\link[=wk_platform_endian]{wk_platform_endian()}} (slightly faster).}
 
 \item{buffer_size}{For WKB writing, the initial buffer size to use for
@@ -103,9 +103,12 @@ to a larger number may result in less copying.}
 \item{wksxp}{A \code{list()} of classed objects}
 }
 \value{
-\code{\link[=wkb_translate_wkt]{wkb_translate_wkt()}} returns a character vector of
-well-known text; \code{\link[=wkb_translate_wkb]{wkb_translate_wkb()}} returns a list
-of raw vectors.
+\verb{*_translate_wkt()} returns a character vector of
+well-known text; \verb{*_translate_wkb()} returns a list
+of raw vectors, and \verb{*_translate_wksxp()} returns an unclassed
+list of \code{\link[=wksxp]{wksxp()}} geometries. Unlike \code{\link[=as_wkb]{as_wkb()}}, \code{\link[=as_wkt]{as_wkt()}}, and
+\code{\link[=as_wksxp]{as_wksxp()}}, these functions do not attach
+a class to the output.
 }
 \description{
 Translate between WKB and WKT
