@@ -24,7 +24,7 @@ public:
     this->endian = ENDIAN_NONE;
   }
 
-  virtual void iterateFeature() {
+  void iterateFeature() {
     this->endian = ENDIAN_NONE;
     WKReader::iterateFeature();
   }
@@ -33,7 +33,7 @@ protected:
   WKBytesProvider& provider;
   unsigned char endian;
 
-  virtual void readFeature(size_t featureId) {
+  void readFeature(size_t featureId) {
     this->handler->nextFeatureStart(featureId);
 
     if (this->provider.featureIsNull()) {
@@ -46,24 +46,7 @@ protected:
   }
 
   void readGeometry(uint32_t partId) {
-    this->endian = this->readChar();
-    this->swapEndian = ((int)endian != (int)WKBytesUtils::nativeEndian());
-
-    WKGeometryMeta meta = WKGeometryMeta(this->readUint32());
-
-    if (meta.hasSRID) {
-      meta.srid = this->readUint32();
-      this->srid = meta.srid;
-    }
-
-    if (meta.geometryType == WKGeometryType::Point) {
-      meta.hasSize = true;
-      meta.size = 1;
-    } else {
-      meta.hasSize = true;
-      meta.size = this->readUint32();
-    }
-
+    WKGeometryMeta meta = this->readMeta();
     this->handler->nextGeometryStart(meta, partId);
 
     switch (meta.geometryType) {
@@ -83,28 +66,50 @@ protected:
       this->readCollection(meta);
       break;
     default:
-      throw WKParseException(
-          ErrorFormatter() <<
-            "Unrecognized geometry type in WKBReader::readGeometry(): " <<
-              meta.geometryType
-      );
+      // # nocov start
+      std::stringstream err;
+      err << "Invalid integer geometry type: " << meta.geometryType;
+      throw WKParseException(err.str());
+      // # nocov end
     }
 
     this->handler->nextGeometryEnd(meta, partId);
   }
 
-  void readPoint(const WKGeometryMeta meta) {
+  WKGeometryMeta readMeta() {
+    this->endian = this->readChar();
+    this->swapEndian = ((int)endian != (int)WKBytesUtils::nativeEndian());
+
+    WKGeometryMeta meta = WKGeometryMeta(this->readUint32());
+
+    if (meta.hasSRID) {
+      meta.srid = this->readUint32();
+      this->srid = meta.srid;
+    }
+
+    if (meta.geometryType == WKGeometryType::Point) {
+      meta.hasSize = true;
+      meta.size = 1;
+    } else {
+      meta.hasSize = true;
+      meta.size = this->readUint32();
+    }
+
+    return meta;
+  }
+
+  void readPoint(const WKGeometryMeta& meta) {
     this->readCoordinate(meta, 0);
   }
 
-  void readLineString(const WKGeometryMeta meta) {
+  void readLineString(const WKGeometryMeta& meta) {
     for (uint32_t i=0; i < meta.size; i++) {
       this->coordId = i;
       this->readCoordinate(meta, i);
     }
   }
 
-  void readPolygon(WKGeometryMeta meta) {
+  void readPolygon(WKGeometryMeta& meta) {
     uint32_t ringSize;
     for (uint32_t i=0; i < meta.size; i++) {
       this->ringId = i;
@@ -113,7 +118,7 @@ protected:
     }
   }
 
-  void readLinearRing(const WKGeometryMeta meta, uint32_t size, uint32_t ringId) {
+  void readLinearRing(const WKGeometryMeta& meta, uint32_t size, uint32_t ringId) {
     this->handler->nextLinearRingStart(meta, size, ringId);
     for (uint32_t i=0; i < size; i++) {
       this->coordId = i;
@@ -122,14 +127,14 @@ protected:
     this->handler->nextLinearRingEnd(meta, size, ringId);
   }
 
-  void readCollection(WKGeometryMeta meta) {
+  void readCollection(const WKGeometryMeta& meta) {
     for (uint32_t i=0; i < meta.size; i++) {
       this->partId = i;
       this->readGeometry(i);
     }
   }
 
-  void readCoordinate(WKGeometryMeta meta, uint32_t coordId) {
+  void readCoordinate(const WKGeometryMeta& meta, uint32_t coordId) {
     this->x = this->readDouble();
     this->y = this->readDouble();
 

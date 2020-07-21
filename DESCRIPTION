@@ -1,6 +1,6 @@
 Package: wk
 Title: Lightweight Well-Known Geometry Parsing
-Version: 0.3.0
+Version: 0.3.1
 Authors@R: 
     c(
       person(given = "Dewey",
@@ -12,9 +12,7 @@ Authors@R:
               family = "Pebesma",
               role = c("aut"),
               email = "edzer.pebesma@uni-muenster.de",
-              comment = c(ORCID = "0000-0001-8049-7069")),
-        person("Refractions Research Inc.", role = "cph"),
-        person("Vivid Solutions Inc.", role = "cph")
+              comment = c(ORCID = "0000-0001-8049-7069"))
     )
 Maintainer: Dewey Dunnington <dewey@fishandwhistle.net>
 Description: Provides a minimal R and C++ API for parsing
@@ -26,11 +24,10 @@ Description: Provides a minimal R and C++ API for parsing
   useful in R if the information they contain can be 
   accessed in R, for which high-performance functions 
   are provided here.
-License: LGPL (>= 2.1)
-Copyright: file COPYRIGHTS
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.1.0.9000
+RoxygenNote: 7.1.1
 LinkingTo: Rcpp
 Imports: Rcpp
 Suggests: testthat, vctrs (>= 0.3.0)
@@ -38,10 +35,8 @@ URL: https://paleolimbot.github.io/wk,
         https://github.com/paleolimbot/wk
 BugReports: https://github.com/paleolimbot/wk/issues
 NeedsCompilation: yes
-Packaged: 2020-06-21 13:33:28 UTC; dewey
+Packaged: 2020-07-21 12:44:38 UTC; dewey
 Author: Dewey Dunnington [aut, cre] (<https://orcid.org/0000-0002-9415-4582>),
-  Edzer Pebesma [aut] (<https://orcid.org/0000-0001-8049-7069>),
-  Refractions Research Inc. [cph],
-  Vivid Solutions Inc. [cph]
+  Edzer Pebesma [aut] (<https://orcid.org/0000-0001-8049-7069>)
 Repository: CRAN
-Date/Publication: 2020-06-21 14:10:02 UTC
+Date/Publication: 2020-07-21 13:40:02 UTC

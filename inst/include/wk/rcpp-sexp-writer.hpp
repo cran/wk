@@ -8,14 +8,14 @@
 
 class WKRcppSEXPWriter: public WKWriter {
 public:
-  WKRcppSEXPWriter(WKSEXPExporter& exporter): WKWriter(exporter), feature(R_NilValue), exporter(exporter) {}
+  WKRcppSEXPWriter(WKRcppSEXPExporter& exporter): WKWriter(exporter), feature(R_NilValue), exporter(exporter) {}
 
 protected:
   // I'm sure there's a way to do this without as much copying
   std::vector<Rcpp::List> stack;
   SEXP feature;
   Rcpp::NumericMatrix currentCoordinates;
-  WKSEXPExporter& exporter;
+  WKRcppSEXPExporter& exporter;
 
   void nextFeatureStart(size_t featureId) {
     WKWriter::nextFeatureStart(featureId);
@@ -92,7 +92,7 @@ protected:
   }
 
   void nextCoordinate(const WKGeometryMeta& meta, const WKCoord& coord, uint32_t coordId) {
-    for (int i = 0; i < coord.size(); i++) {
+    for (size_t i = 0; i < coord.size(); i++) {
       this->currentCoordinates(coordId, i) = coord[i];
     }
   }

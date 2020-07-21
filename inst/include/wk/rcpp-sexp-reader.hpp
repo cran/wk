@@ -3,6 +3,7 @@
 #define WK_SEXP_READER
 
 #include "wk/reader.hpp"
+#include "wk/error-formatter.hpp"
 #include <Rcpp.h>
 #include "wk/rcpp-io.hpp"
 
@@ -25,7 +26,7 @@ protected:
     this->handler->nextFeatureEnd(featureId);
   }
 
-  virtual void readClassedGeometry(SEXP item, uint32_t partId) {
+  void readClassedGeometry(const SEXP& item, uint32_t partId) {
 
     WKGeometryMeta meta;
     try {
@@ -55,7 +56,7 @@ protected:
     this->readGeometry(item, meta, partId);
   }
 
-  virtual void readGeometry(SEXP item, const WKGeometryMeta meta, uint32_t partId) {
+  void readGeometry(const SEXP& item, const WKGeometryMeta& meta, uint32_t partId) {
     this->handler->nextGeometryStart(meta, partId);
 
     try {
@@ -107,7 +108,7 @@ protected:
     this->handler->nextGeometryEnd(meta, partId);
   }
 
-  virtual void readPoint(Rcpp::NumericMatrix item, WKGeometryMeta meta) {
+  void readPoint(const Rcpp::NumericMatrix& item, const WKGeometryMeta& meta) {
     if (meta.size > 1) {
       throw WKParseException(
           ErrorFormatter() << "Expected matrix with 0 or 1 rows but found matrix with " <<
@@ -118,11 +119,11 @@ protected:
     this->readCoordinates(item, meta);
   }
 
-  virtual void readLinestring(Rcpp::NumericMatrix item, const WKGeometryMeta meta) {
+  void readLinestring(const Rcpp::NumericMatrix& item, const WKGeometryMeta& meta) {
     this->readCoordinates(item, meta);
   }
 
-  virtual void readPolygon(Rcpp::List item, const WKGeometryMeta meta) {
+  void readPolygon(const Rcpp::List& item, const WKGeometryMeta& meta) {
     for (R_xlen_t i = 0; i < item.size(); i++) {
       try {
         Rcpp::NumericMatrix ring = item[i];
@@ -137,7 +138,7 @@ protected:
     }
   }
 
-  virtual void readMultiPoint(Rcpp::List item, const WKGeometryMeta meta)  {
+  void readMultiPoint(const Rcpp::List& item, const WKGeometryMeta& meta)  {
     for (R_xlen_t i = 0; i < item.size(); i++) {
       WKGeometryMeta childMeta(WKGeometryType::Point, meta.hasZ, meta.hasM, meta.hasSRID);
       childMeta.srid = meta.srid;
@@ -158,7 +159,7 @@ protected:
     }
   }
 
-  virtual void readMultiLineString(Rcpp::List item, const WKGeometryMeta meta)  {
+  void readMultiLineString(const Rcpp::List& item, const WKGeometryMeta& meta)  {
     for (R_xlen_t i = 0; i < item.size(); i++) {
       WKGeometryMeta childMeta(WKGeometryType::LineString, meta.hasZ, meta.hasM, meta.hasSRID);
       childMeta.srid = meta.srid;
@@ -179,7 +180,7 @@ protected:
     }
   }
 
-  virtual void readMultiPolygon(Rcpp::List item, const WKGeometryMeta meta)  {
+  void readMultiPolygon(const Rcpp::List& item, const WKGeometryMeta& meta)  {
     for (R_xlen_t i = 0; i < item.size(); i++) {
       WKGeometryMeta childMeta(WKGeometryType::Polygon, meta.hasZ, meta.hasM, meta.hasSRID);
       childMeta.srid = meta.srid;
@@ -200,13 +201,13 @@ protected:
     }
   }
 
-  virtual void readCollection(Rcpp::List item, const WKGeometryMeta meta) {
+  void readCollection(const Rcpp::List& item, const WKGeometryMeta& meta) {
     for (R_xlen_t i = 0; i < item.size(); i++) {
       this->readClassedGeometry(item[i], i);
     }
   }
 
-  virtual void readCoordinates(Rcpp::NumericMatrix coords, const WKGeometryMeta meta) {
+  void readCoordinates(const Rcpp::NumericMatrix& coords, const WKGeometryMeta& meta) {
     WKCoord coord;
     coord.hasZ = meta.hasZ;
     coord.hasM = meta.hasM;
@@ -239,7 +240,7 @@ protected:
 
 private:
   template <class T>
-  WKGeometryMeta readMeta(T item, int geometryType) {
+  WKGeometryMeta readMeta(const T& item, int geometryType) {
     uint32_t srid = WKGeometryMeta::SRID_NONE;
     bool hasSRID = false;
     bool hasZ = false;
@@ -284,11 +285,11 @@ private:
     return meta;
   }
 
-  uint32_t itemSize(Rcpp::NumericMatrix item) {
+  uint32_t itemSize(const Rcpp::NumericMatrix& item) {
     return item.nrow();
   }
 
-  uint32_t itemSize(Rcpp::List item) {
+  uint32_t itemSize(const Rcpp::List& item) {
     return item.size();
   }
 };

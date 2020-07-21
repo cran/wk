@@ -23,7 +23,7 @@ readable tests and examples (WKT).
 
 ## Installation
 
-You can install the released version of s2 from
+You can install the released version of wk from
 [CRAN](https://cran.r-project.org/) with:
 
 ``` r
@@ -61,23 +61,6 @@ as_wkb(wkt("POINT (30 10)"))
 #> [1] <POINT (30 10)>
 ```
 
-## Extract coordinates and meta information
-
-One of the main drawbacks to passing around geometries in WKB is that
-the format is opaque to R users, who need coordinates as R objects
-rather than binary vectors. In addition to `print()` methods for `wkb()`
-vectors, the `wk*_meta()` and `wk*_coords()` functions provide usable
-coordinates and feature meta.
-
-``` r
-wkt_coords("POINT ZM (1 2 3 4)")
-#>   feature_id part_id ring_id x y z m
-#> 1          1       1       0 1 2 3 4
-wkt_meta("POINT ZM (1 2 3 4)")
-#>   feature_id part_id type_id size srid has_z has_m n_coords
-#> 1          1       1       1    1   NA  TRUE  TRUE        1
-```
-
 ## Well-known R objects
 
 The wk package experimentally generates (and parses) a plain R object
@@ -94,6 +77,37 @@ wkt_translate_wksxp("POINT (30 10)")
 #> [1,]   30   10
 #> attr(,"class")
 #> [1] "wk_point"
+```
+
+## wkutils
+
+To keep the footprint (i.e., compile time) of this package as slim as
+possible, utilities to work with WKT, WKB, and well-known R objects are
+located in the [wkutils package](https://paleolimbot.github.io/wkutils).
+One of the main drawbacks to passing around geometries in WKB is that
+the format is opaque to R users, who need coordinates as R objects
+rather than binary vectors. The wkutils package provides `wk*_meta()`
+and `wk*_coords()` functions (among others) to extract usable
+coordinates and feature meta.
+
+``` r
+wkutils::wkt_coords("POINT ZM (1 2 3 4)")
+#> # A tibble: 1 x 7
+#>   feature_id part_id ring_id     x     y     z     m
+#>        <int>   <int>   <int> <dbl> <dbl> <dbl> <dbl>
+#> 1          1       1       0     1     2     3     4
+wkutils::wkt_meta("POINT ZM (1 2 3 4)")
+#> # A tibble: 1 x 8
+#>   feature_id part_id type_id  size  srid has_z has_m n_coords
+#>        <int>   <int>   <int> <int> <int> <lgl> <lgl>    <int>
+#> 1          1       1       1     1    NA TRUE  TRUE         1
+wkutils::wkt_ranges("POINT ZM (1 2 3 4)")
+#> # A tibble: 1 x 8
+#>    xmin  ymin  zmin  mmin  xmax  ymax  zmax  mmax
+#>   <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
+#> 1     1     2     3     4     1     2     3     4
+wkutils::coords_point_translate_wkt(1, 2, 3, 4)
+#> [1] "POINT ZM (1 2 3 4)"
 ```
 
 ## Dependencies
@@ -155,9 +169,10 @@ wkt_read_custom("POINT (30 10)")
 The full handler interface includes methods for the start and end of
 features, geometries (which may be nested), linear rings, coordinates,
 and parse errors. You can preview what will get called for a given
-geometry using `wkb|wkt_debug()` functions.
+geometry using `wkutils::wkb|wkt_debug()` functions.
 
 ``` r
+library(wkutils) # remotes::install_github("paleolimbot/wkutils")
 wkt_debug("POINT (30 10)")
 #> nextFeatureStart(0)
 #>     nextGeometryStart(POINT [1], WKReader::PART_ID_NONE)
@@ -182,8 +197,8 @@ bench::mark(
 #> # A tibble: 2 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk            316µs    369µs     2620.   114.2KB     13.6
-#> 2 sf            412µs    453µs     2106.    99.8KB     13.6
+#> 1 wk            243µs    295µs     3292.   110.1KB     18.6
+#> 2 sf            389µs    456µs     2088.    99.8KB     13.8
 ```
 
 Read WKB + Write WKT:
@@ -198,8 +213,8 @@ bench::mark(
 #> # A tibble: 2 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk           3.03ms   3.52ms    282.      3.32KB      0  
-#> 2 sf         205.77ms 208.71ms      4.81  566.66KB     14.4
+#> 1 wk           3.02ms   3.38ms    291.      3.32KB      0  
+#> 2 sf         211.24ms 212.79ms      4.70  566.66KB     18.8
 ```
 
 Read WKT + Write WKB:
@@ -213,8 +228,8 @@ bench::mark(
 #> # A tibble: 2 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk           1.91ms   2.11ms      464.    53.6KB     0   
-#> 2 sf           3.44ms   3.95ms      250.   185.7KB     4.20
+#> 1 wk           1.87ms   2.06ms      476.    49.5KB     0   
+#> 2 sf           3.41ms   3.96ms      247.   185.7KB     4.18
 ```
 
 Read WKT + Write WKT:
@@ -229,45 +244,6 @@ bench::mark(
 #> # A tibble: 2 x 6
 #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk           5.08ms   5.86ms    166.      63.8KB     1.98
-#> 2 sf         209.88ms 211.35ms      4.68   226.6KB    14.0
-```
-
-Generate coordinates:
-
-``` r
-bench::mark(
-  wk_wkb = wk::wksxp_coords(nc_sxp),
-  sfheaders = sfheaders::sfc_to_df(nc_sfc),
-  sf = sf::st_coordinates(nc_sfc),
-  check = FALSE
-)
-#> # A tibble: 3 x 6
-#>   expression      min   median `itr/sec` mem_alloc `gc/sec`
-#>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk_wkb      180.8µs 204.21µs     4643.     131KB     19.8
-#> 2 sfheaders   573.5µs 680.57µs     1431.     627KB     35.9
-#> 3 sf           2.54ms   2.76ms      359.     507KB     24.1
-```
-
-Send polygons to a graphics device (note that the graphics device is the
-main holdup in real life):
-
-``` r
-devoid::void_dev()
-wksxp_plot_new(nc_sxp)
-
-bench::mark(
-  wk_wkb = wk::wksxp_draw_polypath(nc_sxp),
-  sf = sf:::plot.sfc_MULTIPOLYGON(nc_sfc, add = TRUE),
-  check = FALSE
-)
-#> # A tibble: 2 x 6
-#>   expression      min   median `itr/sec` mem_alloc `gc/sec`
-#>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk_wkb     327.76µs 360.79µs     2577.     358KB     15.9
-#> 2 sf           3.48ms   3.85ms      254.     243KB     15.9
-dev.off()
-#> quartz_off_screen 
-#>                 2
+#> 1 wk           5.29ms    5.7ms    172.      63.8KB     1.98
+#> 2 sf         211.84ms  216.8ms      4.64   230.3KB    18.5
 ```

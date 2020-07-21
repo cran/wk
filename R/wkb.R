@@ -86,6 +86,18 @@ as_wkb.wk_wksxp <- function(x, ..., include_z = NULL, include_m = NULL, include_
   )
 }
 
+#' @rdname wkb
+#' @export
+as_wkb.blob <- function(x, ...) {
+  as_wkb(wkb(x), ...)
+}
+
+#' @rdname wkb
+#' @export
+as_wkb.WKB <- function(x, ...) {
+  as_wkb(wkb(x), ...)
+}
+
 #' S3 Details for wk_wkb
 #'
 #' @param x A (possibly) [wkb()] vector
@@ -97,7 +109,7 @@ new_wk_wkb <- function(x = list()) {
     stop("wkb input must be a list without attributes",  call. = FALSE)
   }
 
-  structure(x, class = c("wk_wkb", "wk_vctr", "geovctr"))
+  structure(x, class = c("wk_wkb", "wk_vctr"))
 }
 
 #' @rdname new_wk_wkb
