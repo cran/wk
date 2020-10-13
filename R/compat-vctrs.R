@@ -23,7 +23,7 @@ vec_cast.wk_wkb <- function(x, to, ...) {
   UseMethod("vec_cast.wk_wkb")
 }
 
-#' @method vec_cast.wk_wkt default
+#' @method vec_cast.wk_wkb default
 #' @export
 vec_cast.wk_wkb.default <- function(x, to, ...) {
   vctrs::vec_default_cast(x, to) # nocov
@@ -217,40 +217,114 @@ vec_ptype2.wk_wksxp.wk_wkt <- function(x, y, ..., x_arg = "x", y_arg = "y") {
   new_wk_wksxp()
 }
 
-# .onLoad() -----------------
+# xy() --------
 
-# nocov start
-.onLoad <- function(...) {
-  # register vctrs dependencies
-  for (cls in c("wk_wkb", "wk_wkt", "wk_wksxp")) {
-    register_s3_method("vctrs", "vec_proxy", cls)
-    register_s3_method("vctrs", "vec_restore", cls)
-    register_s3_method("vctrs", "vec_cast", cls)
-    register_s3_method("vctrs", "vec_ptype2", cls)
-  }
+vec_proxy.wk_xy <- function(x, ...) {
+  as.data.frame(x)
 }
 
-register_s3_method <- function(pkg, generic, class, fun = NULL) {
-  stopifnot(is.character(pkg), length(pkg) == 1)
-  stopifnot(is.character(generic), length(generic) == 1)
-  stopifnot(is.character(class), length(class) == 1)
-
-  if (is.null(fun)) {
-    fun <- get(paste0(generic, ".", class), envir = parent.frame())
-  } else {
-    stopifnot(is.function(fun))
-  }
-
-  if (pkg %in% loadedNamespaces()) {
-    registerS3method(generic, class, fun, envir = asNamespace(pkg))
-  }
-
-  # Always register hook in case package is later unloaded & reloaded
-  setHook(
-    packageEvent(pkg, "onLoad"),
-    function(...) {
-      registerS3method(generic, class, fun, envir = asNamespace(pkg))
-    }
-  )
+vec_restore.wk_xy <- function(x, ...) {
+  new_wk_xy(list(x = x$x, y = x$y))
 }
-# nocov end
+
+#' @rdname vctrs-methods
+#' @export vec_cast.wk_xy
+vec_cast.wk_xy <- function(x, to, ...) {
+  UseMethod("vec_cast.wk_xy")
+}
+
+#' @method vec_cast.wk_xy default
+#' @export
+vec_cast.wk_xy.default <- function(x, to, ...) {
+  vctrs::vec_default_cast(x, to) # nocov
+}
+
+#' @rdname vctrs-methods
+#' @export vec_ptype2.wk_xy
+vec_ptype2.wk_xy <- function(x, y, ...) {
+  UseMethod("vec_ptype2.wk_xy", y)
+}
+
+# xyz() --------
+
+vec_proxy.wk_xyz <- function(x, ...) {
+  as.data.frame(x)
+}
+
+vec_restore.wk_xyz <- function(x, ...) {
+  new_wk_xyz(list(x = x$x, y = x$y))
+}
+
+#' @rdname vctrs-methods
+#' @export vec_cast.wk_xyz
+vec_cast.wk_xyz <- function(x, to, ...) {
+  UseMethod("vec_cast.wk_xyz")
+}
+
+#' @method vec_cast.wk_xyz default
+#' @export
+vec_cast.wk_xyz.default <- function(x, to, ...) {
+  vctrs::vec_default_cast(x, to) # nocov
+}
+
+#' @rdname vctrs-methods
+#' @export vec_ptype2.wk_xyz
+vec_ptype2.wk_xyz <- function(x, y, ...) {
+  UseMethod("vec_ptype2.wk_xyz", y)
+}
+
+# xym() --------
+
+vec_proxy.wk_xym <- function(x, ...) {
+  as.data.frame(x)
+}
+
+vec_restore.wk_xym <- function(x, ...) {
+  new_wk_xym(list(x = x$x, y = x$y))
+}
+
+#' @rdname vctrs-methods
+#' @export vec_cast.wk_xym
+vec_cast.wk_xym <- function(x, to, ...) {
+  UseMethod("vec_cast.wk_xym")
+}
+
+#' @method vec_cast.wk_xym default
+#' @export
+vec_cast.wk_xym.default <- function(x, to, ...) {
+  vctrs::vec_default_cast(x, to) # nocov
+}
+
+#' @rdname vctrs-methods
+#' @export vec_ptype2.wk_xym
+vec_ptype2.wk_xym <- function(x, y, ...) {
+  UseMethod("vec_ptype2.wk_xym", y)
+}
+
+# xyzm() --------
+
+vec_proxy.wk_xyzm <- function(x, ...) {
+  as.data.frame(x)
+}
+
+vec_restore.wk_xyzm <- function(x, ...) {
+  new_wk_xyzm(list(x = x$x, y = x$y))
+}
+
+#' @rdname vctrs-methods
+#' @export vec_cast.wk_xyzm
+vec_cast.wk_xyzm <- function(x, to, ...) {
+  UseMethod("vec_cast.wk_xyzm")
+}
+
+#' @method vec_cast.wk_xyzm default
+#' @export
+vec_cast.wk_xyzm.default <- function(x, to, ...) {
+  vctrs::vec_default_cast(x, to) # nocov
+}
+
+#' @rdname vctrs-methods
+#' @export vec_ptype2.wk_xyzm
+vec_ptype2.wk_xyzm <- function(x, y, ...) {
+  UseMethod("vec_ptype2.wk_xyzm", y)
+}
