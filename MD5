@@ -1,12 +1,12 @@
-dbbc31ebc999a10d7daf8924f30c4314 *DESCRIPTION
+8b6d122f5a7d6e9e294cc75fc650eed2 *DESCRIPTION
 3af0d5f6726a14ed40722905f3202a79 *LICENSE
 ed31bade102efa3995b3b012ab778946 *NAMESPACE
-3998c1344e6b289d4e972f49e6b7e0df *NEWS.md
+f43f260a7510e02a5aec8fc91bd332e5 *NEWS.md
 da65c68b9f3665eafa4768d3bc05d827 *R/RcppExports.R
 893778d66091f9926a55c411d1335dcd *R/compat-sf.R
 916b510f3db3e5b445bf6af694ecb809 *R/compat-vctrs.R
 9bf08b306f5f49d1965dbd664d8a2377 *R/format.R
-d2535fae5b65f5f8e1bc6978470a9e12 *R/plot.R
+d3bd80a44886a955f9ccde36e844791c *R/plot.R
 69da5b09913c3898775a98861f9903a9 *R/problems.R
 4641a408f9bb3d5b9d8a00c9a5229bb0 *R/translate.R
 7607db54fd57cb0a0fd56a6cb007ff39 *R/utils.R
@@ -49,7 +49,7 @@ ed7a958c0044f8910b0ec0044a34a2ca *man/new_wk_wkb.Rd
 10f23b65c6c0315a391efdfd41ae83dd *man/new_wk_wksxp.Rd
 ca6006ee31858f3a163c90f210ac335e *man/new_wk_wkt.Rd
 1ddb33a9f3c3d0b3ab0009031d6a3d3a *man/new_wk_xy.Rd
-764766506b1d82537141b1651c34a908 *man/plot.wk_wkt.Rd
+673c613546b3331f43ef89a47ba846e5 *man/plot.wk_wkt.Rd
 0a2ad76ebcb7e5e83d1a2a58660b840d *man/rct.Rd
 1bf269fa1e46e45281989ea521fc28dd *man/vctrs-methods.Rd
 76f167c37abe3125ce12b1c20d3cc013 *man/wk-package.Rd
@@ -66,10 +66,10 @@ dfc53542cfa5f681e13bd8ce1368d531 *src/format.cpp
 979999ff0b79dbdd7090939dd5eb1f58 *src/problems.cpp
 360090c472ab7fa28c190aff93b4cbf1 *src/translate.cpp
 b17060e2f3f82fabb10c17b68e310237 *tests/testthat.R
-4db3d68ac18ffeb84fd4519548f8615f *tests/testthat/Rplots.pdf
+3b5ac0fa97caa1fd9c6aaf6602b41ef3 *tests/testthat/Rplots.pdf
 8ff0531d5590d307ceaa99cfc8dec8c2 *tests/testthat/test-compat-sf.R
 7a7489d9953cdb8978f8a0dbd22fb513 *tests/testthat/test-format.R
-a584df9dcc9c41dccba4933e448980e5 *tests/testthat/test-plot.R
+772f906bb3ab547e456527baf1c4165d *tests/testthat/test-plot.R
 e5eecb525ea885ab04dd2a7430f22f31 *tests/testthat/test-problems.R
 22ee60576beb04a3c49ac845a8670ced *tests/testthat/test-translate.R
 73b7d0e7089df5876b96b6eda8aabc90 *tests/testthat/test-utils.R

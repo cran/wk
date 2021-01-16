@@ -40,7 +40,7 @@
 )
 }
 \arguments{
-\item{x}{A \code{\link[=wkt]{wkt()}}, \code{\link[=wkb]{wkb()}}, or \code{\link[=wksxp]{wksxp()}} vector.}
+\item{x}{A \code{\link[=wkt]{wkt()}} or \code{\link[=wkb]{wkb()}} vector.}
 
 \item{...}{Passed to plotting functions for features: \code{\link[graphics:points]{graphics::points()}}
 for point and multipoint geometries, \code{\link[graphics:lines]{graphics::lines()}} for linestring
@@ -49,7 +49,7 @@ and multipolygon geometries.}
 
 \item{asp}{Passed to \code{\link[graphics:plot.default]{graphics::plot()}}}
 
-\item{bbox}{The limits of the plot in the form returned by \code{\link[wkutils:wkb_ranges]{wksxp_ranges()}}.}
+\item{bbox}{The limits of the plot in the form returned by \code{\link[wkutils:wkb_ranges]{wkt_ranges()}}.}
 
 \item{xlab}{Passed to \code{\link[graphics:plot.default]{graphics::plot()}}}
 
@@ -71,7 +71,6 @@ Plot well-known geometry vectors
 if (requireNamespace("wkutils")) {
   plot(as_wkt("LINESTRING (0 0, 1 1)"))
   plot(as_wkb("LINESTRING (0 0, 1 1)"))
-  plot(as_wksxp("LINESTRING (0 0, 1 1)"))
 }
 
 }

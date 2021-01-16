@@ -12,7 +12,6 @@
 #' if (requireNamespace("wkutils")) {
 #'   plot(as_wkt("LINESTRING (0 0, 1 1)"))
 #'   plot(as_wkb("LINESTRING (0 0, 1 1)"))
-#'   plot(as_wksxp("LINESTRING (0 0, 1 1)"))
 #' }
 #'
 plot.wk_wkt <- function(x, ..., asp = 1, bbox = NULL, xlab = "", ylab = "",
@@ -53,16 +52,6 @@ plot.wk_wkb <- function(x, ..., asp = 1, bbox = NULL, xlab = "", ylab = "",
 #' @export
 plot.wk_wksxp <- function(x, ..., asp = 1, bbox = NULL, xlab = "", ylab = "",
                           rule = "evenodd", add = FALSE) {
-  wkutils::wksxp_plot(
-    x,
-    ...,
-    asp = asp,
-    bbox = bbox,
-    xlab = xlab,
-    ylab = ylab,
-    rule = rule,
-    add = add
-  )
-
+  warning("plot.wk_wksxp() is defunct and will be removed in a future version")
   invisible(x)
 }

@@ -1,6 +1,6 @@
 Package: wk
 Title: Lightweight Well-Known Geometry Parsing
-Version: 0.3.3
+Version: 0.3.4
 Authors@R: 
     c(
       person(given = "Dewey",
@@ -35,8 +35,8 @@ URL: https://paleolimbot.github.io/wk/,
         https://github.com/paleolimbot/wk
 BugReports: https://github.com/paleolimbot/wk/issues
 NeedsCompilation: yes
-Packaged: 2020-10-13 00:25:28 UTC; dewey
+Packaged: 2021-01-16 12:05:46 UTC; dewey
 Author: Dewey Dunnington [aut, cre] (<https://orcid.org/0000-0002-9415-4582>),
   Edzer Pebesma [aut] (<https://orcid.org/0000-0001-8049-7069>)
 Repository: CRAN
-Date/Publication: 2020-10-13 04:40:03 UTC
+Date/Publication: 2021-01-16 12:30:02 UTC
