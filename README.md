@@ -6,20 +6,19 @@
 <!-- badges: start -->
 
 [![Lifecycle:
-experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![R build
 status](https://github.com/paleolimbot/wk/workflows/R-CMD-check/badge.svg)](https://github.com/paleolimbot/wk/actions)
 [![Codecov test
 coverage](https://codecov.io/gh/paleolimbot/wk/branch/master/graph/badge.svg)](https://codecov.io/gh/paleolimbot/wk?branch=master)
 <!-- badges: end -->
 
-The goal of wk is to provide lightweight R and C++ infrastructure for
-packages to use well-known formats (well-known binary and well-known
-text) as input and/or output without requiring external software.
-Well-known binary is very fast to read and write, whereas well-known
-text is human-readable and human-writable. Together, these formats allow
-for efficient interchange between software packages (WKB), and highly
-readable tests and examples (WKT).
+The goal of wk is to provide lightweight R, C, and C++ infrastructure
+for a distributed ecosystem of packages that operate on collections of
+coordinates. First, wk provides vector classes for points, circles,
+rectangles, well-known text (WKT), and well-known binary (WKB). Second,
+wk provides a C API and set of S3 generics for event-based iteration
+over vectors of geometries.
 
 ## Installation
 
@@ -44,13 +43,14 @@ If you can load the package, you’re good to go\!
 library(wk)
 ```
 
-## Basic vector classes for WKT and WKB
+## Vector classes
 
 Use `wkt()` to mark a character vector as containing well-known text, or
-`wkb()` to mark a vector as well-known binary. These have some basic
-vector features built in, which means you can subset, repeat,
-concatenate, and put these objects in a data frame or tibble. These come
-with built-in `format()` and `print()` methods.
+`wkb()` to mark a vector as well-known binary. Use `xy()`, `xyz()`,
+`xym()`, and `xyzm()` to create vectors of points, and `rct()` to create
+vectors of rectangles. These classes have full
+[vctrs](https://vctrs.r-lib.org) support and `plot()`/`format()` methods
+to make them as frictionless as possible working in R and RStudio.
 
 ``` r
 wkt("POINT (30 10)")
@@ -59,192 +59,79 @@ wkt("POINT (30 10)")
 as_wkb(wkt("POINT (30 10)"))
 #> <wk_wkb[1]>
 #> [1] <POINT (30 10)>
+xy(1, 2)
+#> <wk_xy[1]>
+#> [1] (1 2)
+rct(1, 2, 3, 4)
+#> <wk_rct[1]>
+#> [1] [1 2 3 4]
+crc(0, 0, 1)
+#> <wk_crc[1]>
+#> [1] [0 0, r = 1]
 ```
 
-## Well-known R objects
+## Generics
 
-The wk package experimentally generates (and parses) a plain R object
-format, which is needed because well-known binary can’t natively
-represent the empty point and reading/writing well-known text is too
-slow. The format of the `wksxp()` object is designed to be as close as
-possible to well-known text and well-known binary to make the
-translation code as clean as possible.
+The wk package is made up of readers, handlers, and filters. Readers
+parse the various formats supported by the wk package, handlers
+calculate values based on information from the readers (e.g.,
+translating a vector of geometries into another format), and filters
+transform information from the readers (e.g., transforming coordinates)
+on the fly. The `wk_handle()` and `wk_translate()` generics power
+operations for many geometry vector formats without having to explicitly
+support each one.
+
+## C API
+
+The distributed nature of the wk framework is powered by a [\~100-line
+header](https://github.com/paleolimbot/wk/blob/master/inst/include/wk-v1.h)
+describing the types of information that parsers typically encounter
+when reading geometries and the order in which that information is
+typically organized. Detailed information is available in the [C and C++
+API
+article](https://paleolimbot.github.io/wk/dev/articles/articles/philosophy.html).
 
 ``` r
-wkt_translate_wksxp("POINT (30 10)")
-#> [[1]]
-#>      [,1] [,2]
-#> [1,]   30   10
-#> attr(,"class")
-#> [1] "wk_point"
-```
-
-## wkutils
-
-To keep the footprint (i.e., compile time) of this package as slim as
-possible, utilities to work with WKT, WKB, and well-known R objects are
-located in the [wkutils
-package](https://paleolimbot.github.io/wkutils/). One of the main
-drawbacks to passing around geometries in WKB is that the format is
-opaque to R users, who need coordinates as R objects rather than binary
-vectors. The wkutils package provides `wk*_meta()` and `wk*_coords()`
-functions (among others) to extract usable coordinates and feature meta.
-
-``` r
-wkutils::wkt_coords("POINT ZM (1 2 3 4)")
-#> # A tibble: 1 x 7
-#>   feature_id part_id ring_id     x     y     z     m
-#>        <int>   <int>   <int> <dbl> <dbl> <dbl> <dbl>
-#> 1          1       1       0     1     2     3     4
-wkutils::wkt_meta("POINT ZM (1 2 3 4)")
-#> # A tibble: 1 x 7
-#>   feature_id part_id type_id  size  srid has_z has_m
-#>        <int>   <int>   <int> <int> <int> <lgl> <lgl>
-#> 1          1       1       1     1    NA TRUE  TRUE
-wkutils::wkt_ranges("POINT ZM (1 2 3 4)")
-#> # A tibble: 1 x 8
-#>    xmin  ymin  zmin  mmin  xmax  ymax  zmax  mmax
-#>   <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
-#> 1     1     2     3     4     1     2     3     4
-wkutils::coords_point_translate_wkt(1, 2, 3, 4)
-#> [1] "POINT ZM (1 2 3 4)"
-```
-
-## Dependencies
-
-The wk package imports [Rcpp](https://cran.r-project.org/package=Rcpp).
-
-## Using the C++ headers
-
-The wk package takes an event-based approach to parsing inspired by the
-event-based SAX XML parser. This makes the readers and writers highly
-re-usable\! This system is class-based, so you will have to make your
-own subclass of `WKGeometryHandler` and wire it up to a `WKReader` to do
-anything useful.
-
-``` cpp
-// If you're writing code in a package, you'll also
-// have to put 'wk' in your `LinkingTo:` description field
-// [[Rcpp::depends(wk)]]
-
-#include <Rcpp.h>
-#include "wk/rcpp-io.hpp"
-#include "wk/wkt-reader.hpp"
-using namespace Rcpp;
-
-class CustomHandler: public WKGeometryHandler {
-public:
-  
-  void nextFeatureStart(size_t featureId) {
-    Rcout << "Do something before feature " << featureId << "\n";
-  }
-  
-  void nextFeatureEnd(size_t featureId) {
-    Rcout << "Do something after feature " << featureId << "\n";
-  }
-};
-
-// [[Rcpp::export]]
-void wkt_read_custom(CharacterVector wkt) {
-  WKCharacterVectorProvider provider(wkt);
-  WKTReader reader(provider);
-  
-  CustomHandler handler;
-  reader.setHandler(&handler);
-  
-  while (reader.hasNextFeature()) {
-    reader.iterateFeature();
-  }
-}
-```
-
-On our example point, this prints the following:
-
-``` r
-wkt_read_custom("POINT (30 10)")
-#> Do something before feature 0
-#> Do something after feature 0
-```
-
-The full handler interface includes methods for the start and end of
-features, geometries (which may be nested), linear rings, coordinates,
-and parse errors. You can preview what will get called for a given
-geometry using `wkutils::wkb|wkt_debug()` functions.
-
-``` r
-library(wkutils) # remotes::install_github("paleolimbot/wkutils")
-#> Warning: package 'wkutils' was built under R version 4.0.2
-wkt_debug("POINT (30 10)")
-#> nextFeatureStart(0)
-#>     nextGeometryStart(POINT [1], WKReader::PART_ID_NONE)
-#>         nextCoordinate(POINT [1], WKCoord(x = 30, y = 10), 0)
-#>     nextGeometryEnd(POINT [1], WKReader::PART_ID_NONE)
-#> nextFeatureEnd(0)
-```
-
-## Performance
-
-This package was designed to stand alone and be flexible, but also
-happens to be really fast for some common operations.
-
-Read WKB + Write WKB:
-
-``` r
-bench::mark(
-  wk = wk:::wksxp_translate_wkb(wk:::wkb_translate_wksxp(nc_wkb)),
-  sf = sf:::CPL_read_wkb(sf:::CPL_write_wkb(nc_sfc, EWKB = TRUE), EWKB = TRUE),
-  check = FALSE
+wk_debug(
+  as_wkt("LINESTRING (1 1, 2 2, 3 3)"),
+  wkt_format_handler(max_coords = 2)
 )
-#> # A tibble: 2 x 6
-#>   expression      min   median `itr/sec` mem_alloc `gc/sec`
-#>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk            236µs    300µs     3072.   110.1KB     21.3
-#> 2 sf            425µs    548µs     1523.    99.1KB     12.4
+#> initialize (dirty = 0  -> 1)
+#> vector_start: <Unknown type / 0>[1] <0x7ffee9a8d688> => WK_CONTINUE
+#>   feature_start (1): <0x7ffee9a8d688>  => WK_CONTINUE
+#>     geometry_start (<none>): LINESTRING[UNKNOWN] <0x7ffee9a8d500> => WK_CONTINUE
+#>       coord (1): <0x7ffee9a8d500> (1.000000 1.000000)  => WK_CONTINUE
+#>       coord (2): <0x7ffee9a8d500> (2.000000 2.000000)  => WK_ABORT_FEATURE
+#> vector_end: <0x7ffee9a8d688>
+#> deinitialize
+#> [1] "LINESTRING (1 1, 2 2..."
 ```
 
-Read WKB + Write WKT:
+## sf support
+
+The wk package implements a reader and writer for sfc objects so you can
+use them wherever you’d use an `xy()`, `rct()`, `crc()`, `wkb()`, or
+`wkt()`:
 
 ``` r
-bench::mark(
-  wk = wk:::wkb_translate_wkt(nc_wkb),
-  sf = sf:::st_as_text.sfc(sf:::st_as_sfc.WKB(nc_WKB, EWKB = TRUE)),
-  check = FALSE
+wk_debug(
+  sf::st_sfc(sf::st_linestring(rbind(c(1, 1), c(2, 2), c(3, 3)))),
+  wkt_format_handler(max_coords = 2)
 )
-#> Warning: Some expressions had a GC in every iteration; so filtering is disabled.
-#> # A tibble: 2 x 6
-#>   expression      min   median `itr/sec` mem_alloc `gc/sec`
-#>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk           3.13ms   4.63ms    209.      3.32KB      0  
-#> 2 sf         246.44ms 255.17ms      3.92  566.67KB     17.6
+#> initialize (dirty = 0  -> 1)
+#> vector_start: LINESTRING B[1] <0x7ffee9a90268> => WK_CONTINUE
+#>   feature_start (1): <0x7ffee9a90268>  => WK_CONTINUE
+#>     geometry_start (<none>): LINESTRING[3] <0x7ffee9a901d0> => WK_CONTINUE
+#>       coord (1): <0x7ffee9a901d0> (1.000000 1.000000)  => WK_CONTINUE
+#>       coord (2): <0x7ffee9a901d0> (2.000000 2.000000)  => WK_ABORT_FEATURE
+#> vector_end: <0x7ffee9a90268>
+#> deinitialize
+#> [1] "LINESTRING (1 1, 2 2..."
 ```
 
-Read WKT + Write WKB:
+## Lightweight
 
-``` r
-bench::mark(
-  wk = wk:::wkt_translate_wkb(nc_wkt),
-  sf = sf:::CPL_write_wkb(sf:::st_as_sfc.character(nc_wkt), EWKB = TRUE),
-  check = FALSE
-)
-#> # A tibble: 2 x 6
-#>   expression      min   median `itr/sec` mem_alloc `gc/sec`
-#>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk           2.12ms   2.38ms      387.    49.5KB     2.03
-#> 2 sf           3.67ms   5.71ms      165.   185.7KB     4.24
-```
-
-Read WKT + Write WKT:
-
-``` r
-bench::mark(
-  wk = wk::wksxp_translate_wkt(wk::wkt_translate_wksxp(nc_wkt)),
-  sf = sf:::st_as_text.sfc(sf:::st_as_sfc.character(nc_wkt)),
-  check = FALSE
-)
-#> Warning: Some expressions had a GC in every iteration; so filtering is disabled.
-#> # A tibble: 2 x 6
-#>   expression      min   median `itr/sec` mem_alloc `gc/sec`
-#>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 wk           5.26ms    6.9ms    123.      63.8KB     1.99
-#> 2 sf         254.41ms  254.5ms      3.93   234.9KB    17.7
-```
+The wk package has one recursive dependency
+([cpp11](https://cpp11.r-lib.org)) and compiles in \~10 seconds. The
+package was designed to be easy to take on as a dependency (although you
+can vendor in the headers if an additional dependency is a concern).

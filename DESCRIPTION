@@ -1,6 +1,6 @@
 Package: wk
 Title: Lightweight Well-Known Geometry Parsing
-Version: 0.3.4
+Version: 0.4.0
 Authors@R: 
     c(
       person(given = "Dewey",
@@ -28,15 +28,16 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.1
-LinkingTo: Rcpp
-Imports: Rcpp
-Suggests: testthat, vctrs (>= 0.3.0), wkutils, sf
+LinkingTo: cpp11
+SystemRequirements: C++11
+Suggests: testthat (>= 3.0.0), vctrs (>= 0.3.0), wkutils, sf, tibble
 URL: https://paleolimbot.github.io/wk/,
         https://github.com/paleolimbot/wk
 BugReports: https://github.com/paleolimbot/wk/issues
+Config/testthat/edition: 3
 NeedsCompilation: yes
-Packaged: 2021-01-16 12:05:46 UTC; dewey
+Packaged: 2021-03-06 12:22:26 UTC; dewey
 Author: Dewey Dunnington [aut, cre] (<https://orcid.org/0000-0002-9415-4582>),
   Edzer Pebesma [aut] (<https://orcid.org/0000-0001-8049-7069>)
 Repository: CRAN
-Date/Publication: 2021-01-16 12:30:02 UTC
+Date/Publication: 2021-03-06 13:00:03 UTC
