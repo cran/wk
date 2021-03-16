@@ -1,7 +1,7 @@
-1e29a772c7fbe626e23c4a11f3409c4f *DESCRIPTION
+5a930d8065e147b74f51b30e89f9979b *DESCRIPTION
 3af0d5f6726a14ed40722905f3202a79 *LICENSE
 d8108a0408a9a55d021f0f8810aa57d2 *NAMESPACE
-cededaf833d309335f53d812b6dea6c9 *NEWS.md
+bb2ef226ae6a5913876d8191e802bed2 *NEWS.md
 908ad4ac578415d8a984cfe233e539e5 *R/bbox.R
 37837e080cc0a9833323cd5c42f54b11 *R/compat-data-frame.R
 28318a897c06cd7aa107d7d20ee8dc04 *R/compat-sf.R
@@ -19,7 +19,7 @@ e5474f9832d64d4dabbb7c978b9d11e4 *R/handle-sfc.R
 e599ddc46785bef59b1b1765677eee11 *R/handle-wkb.R
 fc6fdc1f622810e274aed5256048d758 *R/handle-wkt.R
 8ac464eacf5a841a6e7f9a3f08d140ae *R/handle-xy.R
-d7d0714a5d211de0587035561049104a *R/handler.R
+da201bac20bca334ca4c33ead0804903 *R/handler.R
 0d5f7dbbf0e63ca5d5a9dae96a4edbd2 *R/meta.R
 1e433006af143c86bc1dfe8e47a85518 *R/plot.R
 ff2b3478976082700958ad1e7785d630 *R/problems.R
@@ -40,7 +40,7 @@ e3d6b1a26b83c34fb2a4d039373547da *R/wkt.R
 711be411600a37b5bb1ae679b878be67 *R/xy-writer.R
 c8ca26781f79f698b978d9118da82f39 *R/xyzm.R
 34dc852f9d9ef1ef8b65c765c6a88f0b *R/zzz.R
-e6ebc2614cba8b5e593eac172b63a7b2 *README.md
+511c4df57f6ae7acef1cdbcff508d57c *README.md
 d2e30ce08437d5ef2b5d3814ffd9c4b3 *inst/include/wk-v1-filter.hpp
 ecaaf2dad9e6906ee6976a028751ab45 *inst/include/wk-v1-handler.hpp
 183038655f285c34b38bfef53cba4d72 *inst/include/wk-v1-impl.c
@@ -104,7 +104,7 @@ fffaf2d7e3aff6080c6009863d23a137 *man/wkt.Rd
 f5b9af0803f934f67fe4bd2a96273acd *src/Makevars
 81f63990334269ea7f2d1c8ecae08713 *src/bbox-handler.c
 e7239de7f8749c56e507eae4a760af6e *src/count-handler.c
-1e99596d0d6e1cda34d6b979b24ba9e6 *src/cpp11.cpp
+8ee0c3aaba0b84a42d3e5b0e5b6e7076 *src/cpp11.cpp
 1f9ae820394e37b7ea0689fbe1a5b7d0 *src/debug-filter.c
 36ed3b28e5ec553b0ed864061727510a *src/handle-crc.c
 244eac8d9203108ba45ca5f994b85265 *src/handle-rct.c
@@ -123,7 +123,7 @@ f89df040bd1408403c2e92297bd43199 *src/wkb-writer.c
 ac742d58f266250580dbeec7ff7f60e0 *src/wkt-writer.cpp
 b5958a09dfb996edaea66fd615e266fb *src/xy-writer.c
 b17060e2f3f82fabb10c17b68e310237 *tests/testthat.R
-66e5c9fcda64e8b6049359d58acf93d4 *tests/testthat/Rplots.pdf
+6ca0ab314c494d445e1d23de81d21d10 *tests/testthat/Rplots.pdf
 6e7f243d65d47fdda97e07a3ac5c8a4e *tests/testthat/test-bbox.R
 a6884f5d5f38c3f85f68bfd58f1b1f54 *tests/testthat/test-compat-data-frame.R
 fdd170a06ed4d5c83b3d6a59f419642a *tests/testthat/test-compat-sf.R
@@ -138,7 +138,7 @@ fc6c20c1bdadaf057570c7789592e538 *tests/testthat/test-format.R
 3c3caecb814d2dbecbaf6d1f7535d33c *tests/testthat/test-handle-rct.R
 c55c88d5e01522aed112d1fb40e25056 *tests/testthat/test-handle-sfc.R
 13f8b17710881d5e5e6730d9b37483f0 *tests/testthat/test-handle-wkb.R
-e387f86890f8663e13d5c66c142ef6c3 *tests/testthat/test-handle-wkt.R
+d73b73f0513a5788436936aa023af708 *tests/testthat/test-handle-wkt.R
 bbe11c9102d84af30a83fc8034188387 *tests/testthat/test-handle-xy.R
 beb9576b53f2ce730c7176d277de0c1a *tests/testthat/test-handler.R
 1796c3d8c0518e5b6336bee1070273de *tests/testthat/test-meta.R
