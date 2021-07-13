@@ -40,8 +40,16 @@ print.wk_rcrd <- function(x, ...) {
     return(invisible(x))
   }
 
-  out <- format(x)
+  max_print <- getOption("max.print", 1000)
+  x_head <- format(utils::head(x, max_print))
+  out <- format(x_head)
+
   print(out, quote = FALSE)
+
+  if (length(x) > max_print) {
+    cat(sprintf("Reached max.print (%s)\n", max_print))
+  }
+
   invisible(x)
 }
 
@@ -74,6 +82,12 @@ is.na.wk_rcrd <- function(x, ...) {
 #' @export
 `$.wk_rcrd` <- function(x, i) {
   stop("`$` is not meaningful for 'wk_rcrd' objects", call. = FALSE)
+}
+
+#' @export
+`[[<-.wk_rcrd` <- function(x, i, value) {
+  x[i] <- value
+  x
 }
 
 #' @export
@@ -115,8 +129,8 @@ c.wk_rcrd <- function(...) {
     stop("Can't combine 'wk_rcrd' objects that do not have identical classes.", call. = FALSE)
   }
 
-  # check CRS compatibility
-  Reduce(wk_crs_output, dots)
+  # compute output crs
+  attr(dots[[1]], "crs") <- wk_crs_output(...)
 
   new_wk_vctr(do.call(Map, c(list(c), lapply(dots, unclass))), dots[[1]])
 }

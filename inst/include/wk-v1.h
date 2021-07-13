@@ -81,6 +81,18 @@ typedef struct {
     void (*finalizer)(void* handler_data);
 } wk_handler_t;
 
+typedef struct {
+    int api_version;
+    void* trans_data;
+    int use_z;
+    int use_m;
+    double xyzm_out_min[4];
+    double xyzm_out_max[4];
+    int (*trans)(R_xlen_t feature_id, const double* xyzm_in, double* xyzm_out, void* trans_data);
+    void (*vector_end)(void* trans_data);
+    void (*finalizer)(void* trans_data);
+} wk_trans_t;
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -90,6 +102,10 @@ wk_handler_t* wk_handler_create();
 SEXP wk_handler_create_xptr(wk_handler_t* handler, SEXP tag, SEXP prot);
 void wk_handler_destroy(wk_handler_t* handler);
 SEXP wk_handler_run_xptr(SEXP (*read_fun)(SEXP read_data, wk_handler_t* handler), SEXP read_data, SEXP xptr);
+
+wk_trans_t* wk_trans_create();
+SEXP wk_trans_create_xptr(wk_trans_t* trans, SEXP tag, SEXP prot);
+void wk_trans_destroy(wk_trans_t* trans);
 
 #ifdef __cplusplus
 } // extern "C" {

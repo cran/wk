@@ -1,3 +1,35 @@
+# wk 0.5.0
+
+* Fixed bugs relating to the behaviour of wk classes as
+  vectors (#64, #65, #67, #70).
+* `crc()` objects are now correctly exported as polygons
+  with a closed loop (#66, #70).
+* Added `wk_vertices()` and `wk_coords()` to extract individual
+  coordinate values from geometries with optional identifying
+  information. For advanced users, the `wk_vertex_filter()`
+  can be used as part of a pipeline to export coordinates
+  as point geometries to another handler (#69, #71).
+* Added `wk_flatten()` to extract geometries from collections.
+  For advanced users, the `wk_flatten_filter()` can be used as
+  part of a pipeline (#75, #78).
+* `options("max.print")` is now respected by all vector classes
+  (#72, #74).
+* Moved implementation of plot methods from wkutils to wk to
+  simplify the dependency structure of both packages (#80, #76).
+* Added `wk_polygon()`, `wk_linestring()`, and `wk_collection()`
+  to construct polygons, lines, and collections. For advanced
+  users, `wk_polygon_filter()`, `wk_linestring_filter()`, and
+  `wk_collection_filter()` can be used as part of a pipeline
+  (#77, #84).
+* Added a C-level transform struct that can be used to simplify
+  the the common pattern of transforming coordinates. These
+  structs can be created by other packages; however, the
+  `wk_trans_affine()` and `wk_trans_set()` transforms are
+  also built using this feature. These are run using the 
+  new `wk_transform()` function and power the new
+  `wk_set_z()`, `wk_set_m()`, `wk_drop_z()`, `wk_drop_m()`,
+  functions (#87, #88, #89).
+
 # wk 0.4.1
 
 * Fix LTO and MacOS 3.6.2 check errors (#61).

@@ -23,6 +23,13 @@ test_that("wk_rcrd works", {
   expect_length(format(xy_rcrd), 2)
   expect_length(as.character(xy_rcrd), 2)
 
+  old_opt <- options(max.print = 1000)
+  expect_output(
+    print(structure(list(x = 1:1001), class = "wk_rcrd")),
+    "Reached max.print"
+  )
+  options(old_opt)
+
   xy_rcrd2 <- xy_rcrd
   names(xy_rcrd2) <- NULL
   expect_identical(xy_rcrd2, xy_rcrd)
@@ -58,5 +65,17 @@ test_that("wk_rcrd works", {
   expect_identical(
     data.frame(col_name = xy_rcrd),
     new_data_frame(list(col_name = xy_rcrd))
+  )
+})
+
+test_that("c() for wk_rcrd handles crs attributes", {
+  expect_identical(
+    wk_crs(c(xy(0, 1, crs = wk_crs_inherit()), xy(0, 1, crs = 1234))),
+    1234
+  )
+
+  expect_error(
+    wk_crs(c(xy(0, 1), xy(0, 1, crs = 1234))),
+    "are not equal"
   )
 })

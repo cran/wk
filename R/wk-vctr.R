@@ -12,8 +12,16 @@ print.wk_vctr <- function(x, ...) {
     return(invisible(x))
   }
 
-  out <- stats::setNames(format(x), names(x))
+  max_print <- getOption("max.print", 1000)
+  x_head <- format(utils::head(x, max_print))
+  out <- stats::setNames(format(x_head), names(x_head))
+
   print(out, quote = FALSE)
+
+  if (length(x) > max_print) {
+    cat(sprintf("Reached max.print (%s)\n", max_print))
+  }
+
   invisible(x)
 }
 
@@ -54,6 +62,12 @@ str.wk_vctr <- function(object, ..., indent.str = "", width = getOption("width")
 }
 
 #' @export
+`[[<-.wk_vctr` <- function(x, i, value) {
+  x[i] <- value
+  x
+}
+
+#' @export
 c.wk_vctr <- function(...) {
   dots <- list(...)
   classes <- lapply(dots, class)
@@ -62,8 +76,8 @@ c.wk_vctr <- function(...) {
     stop("Can't combine 'wk_vctr' objects that do not have identical classes.", call. = FALSE)
   }
 
-  # check CRS compatibility
-  Reduce(wk_crs_output, dots)
+  # compute output crs
+  attr(dots[[1]], "crs") <- wk_crs_output(...)
 
   new_wk_vctr(NextMethod(), dots[[1]])
 }
