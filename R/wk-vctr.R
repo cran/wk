@@ -2,11 +2,18 @@
 #' @export
 print.wk_vctr <- function(x, ...) {
   crs <- wk_crs(x)
-  if (is.null(crs)) {
-    cat(sprintf("<%s[%s]>\n", class(x)[1], length(x)))
-  } else {
-    cat(sprintf("<%s[%s] with CRS=%s>\n", class(x)[1], length(x), format(crs)))
+  is_geodesic <- wk_is_geodesic(x)
+  header <- sprintf("%s[%s]", class(x)[1], length(x))
+
+  if (!is.null(crs)) {
+    header <- paste0(header, " with CRS=", wk_crs_format(crs))
   }
+
+  if (isTRUE(is_geodesic)) {
+    header <- paste0("geodesic ", header)
+  }
+
+  cat(sprintf("<%s>\n", header))
 
   if (length(x) == 0) {
     return(invisible(x))
@@ -76,8 +83,10 @@ c.wk_vctr <- function(...) {
     stop("Can't combine 'wk_vctr' objects that do not have identical classes.", call. = FALSE)
   }
 
-  # compute output crs
+  # compute output crs, geodesic
   attr(dots[[1]], "crs") <- wk_crs_output(...)
+  geodesic <- wk_is_geodesic_output(...)
+  attr(dots[[1]], "geodesic") <- if (geodesic) TRUE else NULL
 
   new_wk_vctr(NextMethod(), dots[[1]])
 }
@@ -104,7 +113,12 @@ as.data.frame.wk_vctr <- function(x, ..., optional = FALSE) {
 }
 
 new_wk_vctr <- function(x, template) {
-  structure(x, class = unique(class(template)), crs = attr(template, "crs", exact = TRUE))
+  structure(
+    x,
+    class = unique(class(template)),
+    crs = attr(template, "crs", exact = TRUE),
+    geodesic = attr(template, "geodesic", exact = TRUE)
+  )
 }
 
 parse_base <- function(x, problems) {

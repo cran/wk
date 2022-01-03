@@ -9,15 +9,15 @@
 \alias{as_wkt.wk_wkt}
 \title{Mark character vectors as well-known text}
 \usage{
-wkt(x = character(), crs = wk_crs_auto())
+wkt(x = character(), crs = wk_crs_auto(), geodesic = FALSE)
 
-parse_wkt(x, crs = wk_crs_auto())
+parse_wkt(x, crs = wk_crs_auto(), geodesic = FALSE)
 
 as_wkt(x, ...)
 
 \method{as_wkt}{default}(x, ...)
 
-\method{as_wkt}{character}(x, ..., crs = NULL)
+\method{as_wkt}{character}(x, ..., crs = NULL, geodesic = FALSE)
 
 \method{as_wkt}{wk_wkt}(x, ...)
 }
@@ -25,6 +25,9 @@ as_wkt(x, ...)
 \item{x}{A \code{\link[=character]{character()}} vector containing well-known text.}
 
 \item{crs}{A value to be propagated as the CRS for this vector.}
+
+\item{geodesic}{\code{TRUE} if edges must be interpolated as geodesics when
+coordinates are spherical, \code{FALSE} otherwise.}
 
 \item{...}{Unused}
 }

@@ -3,7 +3,11 @@
 #' @export
 wk_handle.wk_wkt <- function(handleable, handler, ...) {
   handler <- as_wk_handler(handler)
-  wk_cpp_handle_wkt(handleable, handler, reveal_size = TRUE)
+  .Call(
+    wk_c_read_wkt,
+    list(handleable, TRUE),
+    handler
+  )
 }
 
 #' Test handlers for handling of unknown size vectors
@@ -16,5 +20,9 @@ wk_handle.wk_wkt <- function(handleable, handler, ...) {
 #'
 handle_wkt_without_vector_size <- function(handleable, handler) {
   handler <- as_wk_handler(handler)
-  wk_cpp_handle_wkt(handleable, handler, reveal_size = FALSE)
+  .Call(
+    wk_c_read_wkt,
+    list(handleable, FALSE),
+    handler
+  )
 }

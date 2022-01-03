@@ -107,9 +107,6 @@ wk_crs.sfg <- function(x) {
   sf::NA_crs_
 }
 
-# These methods are exported in latest sf, and depending on the order
-# a user loads the namespaces, the other method may get called.
-
 #' @export
 as_wkb.sfc <- function(x, ...) {
   wk_translate(x, new_wk_wkb(crs = wk_crs_inherit()))
@@ -123,6 +120,19 @@ as_wkb.sfg <- function(x, ...) {
 #' @export
 wk_crs_equal_generic.crs <- function(x, y, ...) {
   x == sf::st_crs(y)
+}
+
+#' @export
+wk_crs_proj_definition.crs <- function(crs, proj_version = NULL, verbose = FALSE) {
+  if (is.na(crs)) {
+    wk_crs_proj_definition(NULL)
+  } else if (verbose) {
+    crs$Wkt %||% crs$wkt
+  } else if (isTRUE(is.na(crs$epsg)) || isTRUE(grepl("^[0-9A-Za-z]+:[0-9A-Za-z]+$", crs$input))) {
+    wk_crs_proj_definition(crs$input)
+  } else {
+    paste0("EPSG:", crs$epsg)
+  }
 }
 
 wk_crs_from_sf <- function(x) {
@@ -242,7 +252,7 @@ st_as_sfc.wk_xy <- function(x, ...) {
 }
 
 st_as_sf.wk_xy <- function(x, ...) {
-  if (all(!is.na(x))) {
+  if ((length(x) > 0) && all(!is.na(x))) {
     sf::st_as_sf(as.data.frame(x), coords = xy_dims(x), crs = sf_crs_from_wk(x))
   } else {
     sf::st_as_sf(
@@ -275,4 +285,48 @@ st_as_sf.wk_crc <- function(x, ...) {
       list(geometry = st_as_sfc.wk_crc(x, ...))
     )
   )
+}
+
+# st_geometry methods()
+
+st_geometry.wk_wkb <- function(x, ...) {
+  st_as_sfc.wk_wkb(x, ...)
+}
+
+st_geometry.wk_wkt <- function(x, ...) {
+  st_as_sfc.wk_wkt(x, ...)
+}
+
+st_geometry.wk_xy <- function(x, ...) {
+  st_as_sfc.wk_xy(x, ...)
+}
+
+st_geometry.wk_rct <- function(x, ...) {
+  st_as_sfc.wk_rct(x, ...)
+}
+
+st_geometry.wk_crc <- function(x, ...) {
+  st_as_sfc.wk_crc(x, ...)
+}
+
+# st_bbox() methods
+
+st_bbox.wk_wkb <- function(x, ...) {
+  sf::st_bbox(wk_bbox(x))
+}
+
+st_bbox.wk_wkt <- function(x, ...) {
+  sf::st_bbox(wk_bbox(x))
+}
+
+st_bbox.wk_xy <- function(x, ...) {
+  sf::st_bbox(wk_bbox(x))
+}
+
+st_bbox.wk_rct <- function(x, ...) {
+  sf::st_bbox(unlist(x), crs = wk_crs(x))
+}
+
+st_bbox.wk_crc <- function(x, ...) {
+  sf::st_bbox(wk_bbox(x))
 }

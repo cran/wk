@@ -12,7 +12,8 @@
 #' @examples
 #' rct(1, 2, 3, 4)
 #'
-rct <- function(xmin = double(), ymin = double(), xmax = double(), ymax = double(), crs = wk_crs_auto()) {
+rct <- function(xmin = double(), ymin = double(), xmax = double(), ymax = double(),
+                crs = wk_crs_auto()) {
   vec <- new_wk_rct(
     recycle_common(
       xmin = as.double(xmin),
@@ -53,7 +54,10 @@ as_rct.matrix <- function(x, ..., crs = NULL) {
 #' @export
 as_rct.data.frame <- function(x, ..., crs = NULL) {
   stopifnot(all(c("xmin", "ymin", "xmax", "ymax") %in% names(x)))
-  new_wk_rct(lapply(x[c("xmin", "ymin", "xmax", "ymax")], as.double), crs = crs)
+  new_wk_rct(
+    lapply(x[c("xmin", "ymin", "xmax", "ymax")], as.double),
+    crs = crs
+  )
 }
 
 validate_wk_rct <- function(x) {
@@ -91,5 +95,8 @@ format.wk_rct <- function(x, ...) {
   replacement <- as_rct(value)
   result <- Map("[<-", unclass(x), i, unclass(replacement))
   names(result) <- c("xmin", "ymin", "xmax", "ymax")
-  new_wk_rct(result, crs = wk_crs_output(x, replacement))
+  new_wk_rct(
+    result,
+    crs = wk_crs_output(x, replacement)
+  )
 }

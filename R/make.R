@@ -9,6 +9,8 @@
 #'   values indicate a new ring. Rings are automatically
 #'   closed. This is recycled silently as needed.
 #' @param geometry_type The collection type to create.
+#' @param geodesic Use `TRUE` or `FALSE` to explicitly force
+#'   the geodesic-ness of the output.
 #'
 #' @return An object of the same class as `handleable` with
 #'   whose coordinates have been assembled into the given
@@ -20,15 +22,19 @@
 #' wk_polygon(xy(c(0, 1, 0), c(0, 0, 1)))
 #' wk_collection(xy(c(1, 1), c(2, 3)))
 #'
-wk_linestring <- function(handleable, feature_id = 1L, ...) {
+wk_linestring <- function(handleable, feature_id = 1L, ..., geodesic = NULL) {
   writer <- wk_writer(handleable, generic = TRUE)
   result <- wk_handle(handleable, wk_linestring_filter(writer, as.integer(feature_id)), ...)
-  wk_set_crs(result, wk_crs(handleable))
+
+  wk_crs(result) <- wk_crs(handleable)
+  wk_is_geodesic(result) <- geodesic %||% wk_is_geodesic(handleable)
+
+  result
 }
 
 #' @rdname wk_linestring
 #' @export
-wk_polygon <- function(handleable, feature_id = 1L, ring_id = 1L, ...) {
+wk_polygon <- function(handleable, feature_id = 1L, ring_id = 1L, ..., geodesic = NULL) {
   writer <- wk_writer(handleable, generic = TRUE)
   result <- wk_handle(
     handleable,
@@ -39,7 +45,11 @@ wk_polygon <- function(handleable, feature_id = 1L, ring_id = 1L, ...) {
     ),
     ...
   )
-  wk_set_crs(result, wk_crs(handleable))
+
+  wk_crs(result) <- wk_crs(handleable)
+  wk_is_geodesic(result) <- geodesic %||% wk_is_geodesic(handleable)
+
+  result
 }
 
 #' @rdname wk_linestring
@@ -62,18 +72,27 @@ wk_collection <- function(handleable, geometry_type = wk_geometry_type("geometry
 #' @rdname wk_linestring
 #' @export
 wk_linestring_filter <- function(handler, feature_id = 1L) {
-  .Call(wk_c_linestring_filter_new, as_wk_handler(handler), feature_id)
+  new_wk_handler(
+    .Call(wk_c_linestring_filter_new, as_wk_handler(handler), feature_id),
+    "wk_linestring_filter"
+  )
 }
 
 #' @rdname wk_linestring
 #' @export
 wk_polygon_filter <- function(handler, feature_id = 1L, ring_id = 1L) {
-  .Call(wk_c_polygon_filter_new, handler, feature_id, ring_id)
+  new_wk_handler(
+    .Call(wk_c_polygon_filter_new, handler, feature_id, ring_id),
+    "wk_polygon_filter"
+  )
 }
 
 #' @rdname wk_linestring
 #' @export
 wk_collection_filter <- function(handler, geometry_type = wk_geometry_type("geometrycollection"),
                                  feature_id = 1L) {
-  .Call(wk_c_collection_filter_new, as_wk_handler(handler), geometry_type, feature_id)
+  new_wk_handler(
+    .Call(wk_c_collection_filter_new, as_wk_handler(handler), geometry_type, feature_id),
+    "wk_collection_filter"
+  )
 }

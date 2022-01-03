@@ -19,7 +19,7 @@ test_that("wk_rcrd works", {
   expect_output(expect_identical(str(xy_rcrd), xy_rcrd), "wk_rcrd")
   expect_output(expect_identical(str(xy_rcrd[integer(0)]), xy_rcrd[integer(0)]), "wk_rcrd\\[0\\]")
 
-  expect_output(print(wk_set_crs(xy_rcrd, 1234)), "CRS=1234")
+  expect_output(print(wk_set_crs(xy_rcrd, 1234)), "CRS=EPSG:1234")
   expect_length(format(xy_rcrd), 2)
   expect_length(as.character(xy_rcrd), 2)
 
@@ -38,10 +38,6 @@ test_that("wk_rcrd works", {
 
   expect_identical(
     rep(xy_rcrd, 2),
-    structure(list(x = as.numeric(c(1:3, 1:3)), y = rep(2, 6)), class = "wk_rcrd")
-  )
-  expect_identical(
-    rep_len(xy_rcrd, 6),
     structure(list(x = as.numeric(c(1:3, 1:3)), y = rep(2, 6)), class = "wk_rcrd")
   )
 
@@ -65,6 +61,28 @@ test_that("wk_rcrd works", {
   expect_identical(
     data.frame(col_name = xy_rcrd),
     new_data_frame(list(col_name = xy_rcrd))
+  )
+})
+
+test_that("geodesic gets printed for geodesic rcrd objects", {
+  x_geod <- new_wk_rcrd(
+    list(x = double()),
+    template = structure(list(), class = c("some_wk_rcrd", "wk_rcrd"))
+  )
+
+  s3_register("wk::wk_is_geodesic", "some_wk_rcrd", function(x) TRUE)
+
+  expect_output(print(x_geod), "geodesic some_wk_rcrd")
+})
+
+test_that("rep_len() works for wk_rcrd", {
+  skip_if_not(packageVersion("base") >= "3.6")
+
+  xy_rcrd <- structure(list(x = as.numeric(1:3), y = c(2, 2, 2)), class = "wk_rcrd")
+
+  expect_identical(
+    rep_len(xy_rcrd, 6),
+    structure(list(x = as.numeric(c(1:3, 1:3)), y = rep(2, 6)), class = "wk_rcrd")
   )
 })
 

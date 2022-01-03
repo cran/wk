@@ -12,17 +12,28 @@ test_that("wkt class works", {
   expect_error(new_wk_wkt(list()), "must be a character")
   expect_error(wkt("NOPE"), "Encountered 1 parse problem")
   expect_error(wkt(rep("NOPE", 10)), "Encountered 10 parse problems")
+  expect_error(validate_wk_wkt(list()), "must be of type character")
+  # See #123...validate_wk_wkt() is used in CRAN s2 on a raw character vector
+  # expect_error(validate_wk_wkt(""), "must inherit from")
 
   expect_s3_class(x[1], "wk_wkt")
   expect_identical(x[[1]], x[1])
   expect_s3_class(c(x, x), "wk_wkt")
   expect_identical(rep(x, 2), c(x, x))
   expect_identical(rep(wkt(), 1), wkt())
-  expect_identical(rep_len(x, 2), c(x, x))
   expect_length(c(x, x), 2)
 
   x[1] <- as_wkb("POINT (11 12)")
   expect_identical(x[1], wkt("POINT (11 12)"))
+
+  skip_if_not(packageVersion("base") >= "3.6")
+  expect_identical(rep_len(x, 2), c(x, x))
+})
+
+test_that("wkt() and parse_wkt() strip attributes", {
+  text <- structure("POINT (40 10)", some_attr = "value")
+  expect_identical(wkt(text), wkt("POINT (40 10)"))
+  expect_identical(parse_wkt(text), wkt("POINT (40 10)"))
 })
 
 test_that("as_wkt() works", {
@@ -56,4 +67,28 @@ test_that("wkt() propagates CRS", {
   expect_error(x[1] <- wkt(x, crs = NULL), "are not equal")
   x[1] <- wkt(x, crs = 1234L)
   expect_identical(wk_crs(x), 1234)
+})
+
+test_that("wkt() propagates geodesic", {
+  x <- wkt("POINT (1 2)", geodesic = TRUE)
+  expect_true(wk_is_geodesic(x))
+  expect_true(wk_is_geodesic(x[1]))
+  expect_true(wk_is_geodesic(c(x, x)))
+  expect_true(wk_is_geodesic(rep(x, 2)))
+
+  expect_error(x[1] <- wk_set_geodesic(x, FALSE), "objects have differing values")
+  x[1] <- wk_set_geodesic(x, TRUE)
+  expect_true(wk_is_geodesic(x))
+})
+
+test_that("as_wkt() propagates CRS", {
+  x <- as_wkt("POINT (1 2)", crs = 1234)
+  expect_identical(wk_crs(x), 1234)
+  expect_identical(wk_crs(as_wkt(as_wkb(wkt("POINT (1 2)", crs = 1234)))), 1234)
+})
+
+test_that("as_wkt() propagates geodesic", {
+  x <- as_wkt("POINT (1 2)", geodesic = TRUE)
+  expect_true(wk_is_geodesic(x))
+  expect_true(wk_is_geodesic(as_wkt(as_wkb(wkt("POINT (1 2)", geodesic = TRUE)))))
 })

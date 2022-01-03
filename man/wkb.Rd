@@ -12,9 +12,9 @@
 \alias{as_wkb.WKB}
 \title{Mark lists of raw vectors as well-known binary}
 \usage{
-wkb(x = list(), crs = wk_crs_auto())
+wkb(x = list(), crs = wk_crs_auto(), geodesic = FALSE)
 
-parse_wkb(x, crs = wk_crs_auto())
+parse_wkb(x, crs = wk_crs_auto(), geodesic = FALSE)
 
 wk_platform_endian()
 
@@ -22,18 +22,21 @@ as_wkb(x, ...)
 
 \method{as_wkb}{default}(x, ...)
 
-\method{as_wkb}{character}(x, ..., crs = NULL)
+\method{as_wkb}{character}(x, ..., crs = NULL, geodesic = FALSE)
 
 \method{as_wkb}{wk_wkb}(x, ...)
 
-\method{as_wkb}{blob}(x, ..., crs = NULL)
+\method{as_wkb}{blob}(x, ..., crs = NULL, geodesic = FALSE)
 
-\method{as_wkb}{WKB}(x, ..., crs = NULL)
+\method{as_wkb}{WKB}(x, ..., crs = NULL, geodesic = FALSE)
 }
 \arguments{
 \item{x}{A \code{\link[=list]{list()}} of \code{\link[=raw]{raw()}} vectors or \code{NULL}.}
 
 \item{crs}{A value to be propagated as the CRS for this vector.}
+
+\item{geodesic}{\code{TRUE} if edges must be interpolated as geodesics when
+coordinates are spherical, \code{FALSE} otherwise.}
 
 \item{...}{Unused}
 }
@@ -44,6 +47,6 @@ A \code{\link[=new_wk_wkb]{new_wk_wkb()}}
 Mark lists of raw vectors as well-known binary
 }
 \examples{
-wkb(wkt_translate_wkb("POINT (20 10)"))
+as_wkb("POINT (20 10)")
 
 }

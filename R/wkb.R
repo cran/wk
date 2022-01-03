@@ -9,22 +9,23 @@
 #' @export
 #'
 #' @examples
-#' wkb(wkt_translate_wkb("POINT (20 10)"))
+#' as_wkb("POINT (20 10)")
 #'
-wkb <- function(x = list(), crs = wk_crs_auto()) {
+wkb <- function(x = list(), crs = wk_crs_auto(), geodesic = FALSE) {
   crs <- wk_crs_auto_value(x, crs)
   attributes(x) <- NULL
-  wkb <- new_wk_wkb(x, crs = crs)
-  validate_wk_wkb(x)
+  wkb <- new_wk_wkb(x, crs = crs, geodesic = geodesic_attr(geodesic))
+  validate_wk_wkb(wkb)
   wkb
 }
 
 #' @rdname wkb
 #' @export
-parse_wkb <- function(x, crs = wk_crs_auto()) {
+parse_wkb <- function(x, crs = wk_crs_auto(), geodesic = FALSE) {
   crs <- wk_crs_auto_value(x, crs)
   attributes(x) <- NULL
-  parse_base(new_wk_wkb(x, crs = crs), wkb_problems(x))
+  wkb <- new_wk_wkb(x, crs = crs, geodesic = geodesic_attr(geodesic))
+  parse_base(wkb, wk_problems(wkb))
 }
 
 #' @rdname wkb
@@ -42,13 +43,17 @@ as_wkb <- function(x, ...) {
 #' @rdname wkb
 #' @export
 as_wkb.default <- function(x, ...) {
-  wk_translate(x, new_wk_wkb(crs = wk_crs_inherit()), ...)
+  wk_translate(
+    x,
+    new_wk_wkb(crs = wk_crs_inherit(), geodesic = wk_geodesic_inherit()),
+    ...
+  )
 }
 
 #' @rdname wkb
 #' @export
-as_wkb.character <- function(x, ..., crs = NULL) {
-  as_wkb(wkt(x, crs = crs), ...)
+as_wkb.character <- function(x, ..., crs = NULL, geodesic = FALSE) {
+  as_wkb(wkt(x, crs = crs, geodesic = geodesic), ...)
 }
 
 #' @rdname wkb
@@ -59,41 +64,51 @@ as_wkb.wk_wkb <- function(x, ...) {
 
 #' @rdname wkb
 #' @export
-as_wkb.blob <- function(x, ..., crs = NULL) {
-  as_wkb(wkb(x, crs = crs), ...)
+as_wkb.blob <- function(x, ..., crs = NULL, geodesic = FALSE) {
+  as_wkb(wkb(x, crs = crs, geodesic = geodesic), ...)
 }
 
 #' @rdname wkb
 #' @export
-as_wkb.WKB <- function(x, ..., crs = NULL) {
-  as_wkb(wkb(x, crs = crs), ...)
+as_wkb.WKB <- function(x, ..., crs = NULL, geodesic = FALSE) {
+  as_wkb(wkb(x, crs = crs, geodesic = geodesic), ...)
 }
 
 #' S3 Details for wk_wkb
 #'
 #' @param x A (possibly) [wkb()] vector
 #' @param crs A value to be propagated as the CRS for this vector.
+#' @inheritParams wk_is_geodesic
 #'
 #' @export
 #'
-new_wk_wkb <- function(x = list(), crs = NULL) {
+new_wk_wkb <- function(x = list(), crs = NULL, geodesic = NULL) {
   if (typeof(x) != "list" || !is.null(attributes(x))) {
     stop("wkb input must be a list without attributes",  call. = FALSE)
   }
 
-  structure(x, class = c("wk_wkb", "wk_vctr"), crs = crs)
+  structure(x, class = c("wk_wkb", "wk_vctr"), crs = crs, geodesic = geodesic)
 }
 
 #' @rdname new_wk_wkb
 #' @export
 validate_wk_wkb <- function(x) {
-  types <- vapply(unclass(x), typeof, character(1))
-  good_types <- types %in% c("raw", "NULL")
-  if (any(!good_types)) {
+  if (typeof(x) != "list") {
+    stop("wkb() must be of type list()", call. = FALSE)
+  }
+
+  good_types <- .Call(wk_c_wkb_is_raw_or_null, x)
+  if (!all(good_types)) {
     stop("items in wkb input must be raw() or NULL", call. = FALSE)
   }
 
-  problems <- wkb_problems(x)
+  if (!inherits(x, "wk_wkb") || !inherits(x, "wk_vctr")) {
+    attributes(x) <- NULL
+    problems <- wk_problems(new_wk_wkb(x))
+  } else {
+    problems <- wk_problems(x)
+  }
+
   stop_for_problems(problems)
 
   invisible(x)
@@ -109,20 +124,22 @@ is_wk_wkb <- function(x) {
 `[<-.wk_wkb` <- function(x, i, value) {
   replacement <- as_wkb(value)
   crs_out <- wk_crs_output(x, replacement)
+  geodesic_out <- wk_is_geodesic_output(x, replacement)
   x <- unclass(x)
   x[i] <- replacement
   attr(x, "crs") <- NULL
-  new_wk_wkb(x, crs = crs_out)
+  attr(x, "geodesic") <- NULL
+  new_wk_wkb(x, crs = crs_out, geodesic = geodesic_attr(geodesic_out))
 }
 
 #' @export
 is.na.wk_wkb <- function(x) {
-  vapply(unclass(x), is.null, logical(1))
+  .Call(wk_c_wkb_is_na, x)
 }
 
 #' @export
 format.wk_wkb <- function(x, ...) {
-  paste0("<", wkb_format(x), ">")
+  paste0("<", wk_format(x), ">")
 }
 
 # as far as I can tell, this is the only way to change

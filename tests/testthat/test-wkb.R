@@ -14,18 +14,23 @@ test_that("wkb class works", {
   expect_error(new_wk_wkb("char!"), "must be a list")
   expect_error(wkb(list("not raw()")), "must be raw")
   expect_error(wkb(list(raw())), "Encountered 1 parse problem")
-  expect_error(wkb(rep(list(raw()), 10)), "Encountered 10 parse problem")
+  expect_error(wkb(rep(list(raw()), 10)), "Encountered 10 parse problems")
+  expect_error(validate_wk_wkb("char!"), "must be of type list")
+  # See #123 and revert in dev wk after CRAN release
+  # expect_error(validate_wk_wkb(list()), "must inherit from")
 
   expect_s3_class(x[1], "wk_wkb")
   expect_identical(x[[1]], x[1])
   expect_s3_class(c(x, x), "wk_wkb")
   expect_identical(rep(x, 2), c(x, x))
-  expect_identical(rep_len(x, 2), c(x, x))
   expect_identical(rep(wkb(), 3), wkb())
   expect_length(c(x, x), 2)
 
   x[1] <- "POINT (11 12)"
   expect_identical(as_wkt(x[1]), wkt("POINT (11 12)"))
+
+  skip_if_not(packageVersion("base") >= "3.6")
+  expect_identical(rep_len(x, 2), c(x, x))
 })
 
 test_that("as_wkb() works", {
@@ -51,7 +56,7 @@ test_that("parse_wkb() works", {
   expect_false(is.na(parsed))
   expect_null(attr(parsed, "problems"))
 
-  x[[1]][2] <- as.raw(0xff)
+  x[[1]][2:3] <- as.raw(0xff)
   expect_warning(parsed <- parse_wkb(x), "Encountered 1 parse problem")
   expect_true(is.na(parsed))
   expect_s3_class(attr(parsed, "problems"), "data.frame")
@@ -69,4 +74,28 @@ test_that("wkb() propagates CRS", {
   expect_error(x[1] <- wkb(x, crs = NULL), "are not equal")
   x[1] <- wkb(x, crs = 1234L)
   expect_identical(wk_crs(x), 1234)
+})
+
+test_that("wkb() propagates geodesic", {
+  x <- wkb(as_wkb("POINT (1 2)"), geodesic = TRUE)
+  expect_true(wk_is_geodesic(x))
+  expect_true(wk_is_geodesic(x[1]))
+  expect_true(wk_is_geodesic(c(x, x)))
+  expect_true(wk_is_geodesic(rep(x, 2)))
+
+  expect_error(x[1] <- wk_set_geodesic(x, FALSE), "objects have differing values")
+  x[1] <- wk_set_geodesic(x, TRUE)
+  expect_true(wk_is_geodesic(x))
+})
+
+test_that("as_wkb() propagates CRS", {
+  x <- as_wkb("POINT (1 2)", crs = 1234)
+  expect_identical(wk_crs(x), 1234)
+  expect_identical(wk_crs(as_wkb(wkt("POINT (1 2)", crs = 1234))), 1234)
+})
+
+test_that("as_wkb() propagates geodesic", {
+  x <- as_wkb("POINT (1 2)", geodesic = TRUE)
+  expect_true(wk_is_geodesic(x))
+  expect_true(wk_is_geodesic(as_wkb(wkt("POINT (1 2)", geodesic = TRUE))))
 })

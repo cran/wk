@@ -1,3 +1,36 @@
+# wk 0.6.0
+
+* Fixed `wk_affine_rescale()` to apply the translate and scale
+  operations in the correct order (#94).
+* Add `wk_handle_slice()` and `wk_chunk_map_feature()` to support
+  a chunk + apply workflow when working with large vectors (#101, #107).
+* C and R code was rewritten to avoid materializing ALTREP vectors
+  (#103, #109).
+* Added a `wk_crs_proj_definition()` generic for foreign CRS objects
+  (#110, #112).
+* Added `wk_crs_longlat()` helper to help promote authority-compliant
+  CRS choices (#112).
+* Added `wk_is_geodesic()`, `wk_set_geodesic()`, and argument `geodesic`
+  in `wkt()` and `wkb()` as a flag for objects whose edges must
+  be interpolated along a spherical/ellipsoidal trajectory (#112).
+* Added `sf::st_geometry()` and `sf::st_sfc()` methods for wk geometry
+  vectors for better integration with sf (#113, #114).
+* Refactored well-known text parser to be more reusable and faster
+  (#115, #104).
+* Minor performance enhancement for `is.na()` and `validate_wk_wkb()`
+  when called on a very long `wkb()` vector (#117).
+* Fixed issue with `validate_wk_wkb()` and `validate_wk_wkt()`, which failed
+  for most valid objects (#119).
+* Added `wk_envelope()` and `wk_envelope_handler()` to compute feature-wise
+  bounding boxes (#120, #122).
+* Fixed headers and tests to pass on big endian systems (#105, #122).
+* Incorporated the geodesic attribute into vctrs methods, data frame
+  columns, and bbox/envelope calculation (#124, #125).
+* Fix `as_xy()` for nested data frames and geodesic objects (#126, #128).
+* Remove deprecated `wkb_problems()`, `wkt_problems()`, `wkb_format()`,
+  and `wkt_format()` (#129).
+* `wk_plot()` is now an S3 generic (#130).
+
 # wk 0.5.0
 
 * Fixed bugs relating to the behaviour of wk classes as
