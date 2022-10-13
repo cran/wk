@@ -126,12 +126,23 @@ wk_crs_equal_generic.crs <- function(x, y, ...) {
 wk_crs_proj_definition.crs <- function(crs, proj_version = NULL, verbose = FALSE) {
   if (is.na(crs)) {
     wk_crs_proj_definition(NULL)
-  } else if (verbose) {
+  } else if (isTRUE(verbose)) {
     crs$Wkt %||% crs$wkt
   } else if (isTRUE(is.na(crs$epsg)) || isTRUE(grepl("^[0-9A-Za-z]+:[0-9A-Za-z]+$", crs$input))) {
     wk_crs_proj_definition(crs$input)
   } else {
     paste0("EPSG:", crs$epsg)
+  }
+}
+
+#' @export
+wk_crs_projjson.crs <- function(crs) {
+  json <- crs$ProjJson
+  if (is.null(json)) {
+    # i.e., GDAL is not >= 3.1.0
+    NextMethod()
+  } else {
+    json
   }
 }
 
@@ -220,7 +231,7 @@ as_xy.sf <- function(x, ..., dims = NULL) {
 
 # dynamically exported
 st_as_sfc.wk_wkb <- function(x, ...) {
-  sf::st_set_crs(sf::st_as_sfc(structure(x, class = "WKB"), EWKB = TRUE), sf_crs_from_wk(x))
+  sf::st_set_crs(wk_handle(x, sfc_writer()), sf_crs_from_wk(x))
 }
 
 st_as_sf.wk_wkb <- function(x, ...) {
@@ -232,7 +243,7 @@ st_as_sf.wk_wkb <- function(x, ...) {
 }
 
 st_as_sfc.wk_wkt <- function(x, ...) {
-  sf::st_as_sfc(as_wkb(x), ...)
+  sf::st_set_crs(wk_handle(x, sfc_writer()), sf_crs_from_wk(x))
 }
 
 st_as_sf.wk_wkt <- function(x, ...) {
@@ -264,11 +275,11 @@ st_as_sf.wk_xy <- function(x, ...) {
 }
 
 st_as_sfc.wk_rct <- function(x, ...) {
-  sf::st_as_sfc(as_wkb(x, ...))
+  sf::st_set_crs(wk_handle(x, sfc_writer()), sf_crs_from_wk(x))
 }
 
 st_as_sfc.wk_crc <- function(x, ...) {
-  sf::st_as_sfc(as_wkb(x, ...))
+  sf::st_set_crs(wk_handle(x, sfc_writer()), sf_crs_from_wk(x))
 }
 
 st_as_sf.wk_rct <- function(x, ...) {
@@ -285,6 +296,16 @@ st_as_sf.wk_crc <- function(x, ...) {
       list(geometry = st_as_sfc.wk_crc(x, ...))
     )
   )
+}
+
+st_as_sfc.wk_grd <- function(x, ...) {
+  result <- wk_handle(x, sfc_writer())
+  sf::st_crs(result) <- sf::st_crs(wk_crs(x))
+  result
+}
+
+st_as_sf.wk_grd <- function(x, ...) {
+  sf::st_as_sf(data.frame(geometry = st_as_sfc.wk_grd(x)))
 }
 
 # st_geometry methods()
@@ -309,6 +330,10 @@ st_geometry.wk_crc <- function(x, ...) {
   st_as_sfc.wk_crc(x, ...)
 }
 
+st_geometry.wk_grd <- function(x, ...) {
+  st_as_sfc.wk_grd(x)
+}
+
 # st_bbox() methods
 
 st_bbox.wk_wkb <- function(x, ...) {
@@ -329,4 +354,60 @@ st_bbox.wk_rct <- function(x, ...) {
 
 st_bbox.wk_crc <- function(x, ...) {
   sf::st_bbox(wk_bbox(x))
+}
+
+st_bbox.wk_grd <- function(x, ...) {
+  sf::st_bbox(wk_bbox(x))
+}
+
+# st_crs() methods
+
+st_crs.wk_wkb <- function(x, ...) {
+  sf::st_crs(wk_crs(x))
+}
+
+st_crs.wk_wkt <- function(x, ...) {
+  sf::st_crs(wk_crs(x))
+}
+
+st_crs.wk_xy <- function(x, ...) {
+  sf::st_crs(wk_crs(x))
+}
+
+st_crs.wk_rct <- function(x, ...) {
+  sf::st_crs(wk_crs(x))
+}
+
+st_crs.wk_crc <- function(x, ...) {
+  sf::st_crs(wk_crs(x))
+}
+
+st_crs.wk_grd <- function(x, ...) {
+  sf::st_crs(wk_crs(x$bbox))
+}
+
+# st_crs<-() methods
+
+`st_crs<-.wk_wkb` <- function(x, value) {
+  wk_set_crs(x, sf::st_crs(value))
+}
+
+`st_crs<-.wk_wkt` <- function(x, value) {
+  wk_set_crs(x, sf::st_crs(value))
+}
+
+`st_crs<-.wk_xy` <- function(x, value) {
+  wk_set_crs(x, sf::st_crs(value))
+}
+
+`st_crs<-.wk_rct` <- function(x, value) {
+  wk_set_crs(x, sf::st_crs(value))
+}
+
+`st_crs<-.wk_crc` <- function(x, value) {
+  wk_set_crs(x, sf::st_crs(value))
+}
+
+`st_crs<-.wk_grd` <- function(x, value) {
+  wk_set_crs(x, sf::st_crs(value))
 }

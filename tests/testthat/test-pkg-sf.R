@@ -25,6 +25,13 @@ test_that("wk_crs_proj_definition() works for sf crs objects", {
   )
 })
 
+test_that("wk_crs_projjson() works for sf crs objects", {
+  skip_if_not_installed("sf")
+
+  expect_match(wk_crs_projjson(sf::st_crs(4326)), "GeographicCRS")
+  expect_identical(wk_crs_projjson(sf::NA_crs_), NA_character_)
+})
+
 test_that("wk_crs/set_crs works on sf/sfc", {
   skip_if_not_installed("sf")
 
@@ -112,10 +119,10 @@ test_that("conversion from bbox to rct works", {
 test_that("conversion to sf works", {
   skip_if_not_installed("sf")
 
-  sfc <- sf::st_sfc(sf::st_point(), sf::st_point(c(0, 1)), crs = 4326)
+  sfc <- sf::st_sfc(sf::st_point(), sf::st_point(c(0, 1)), NULL, crs = 4326)
   sf <- sf::st_as_sf(new_data_frame(list(geometry = sfc)))
-  wkb <- as_wkb(c("POINT EMPTY", "POINT (0 1)"), crs = 4326)
-  wkt <- as_wkt(c("POINT EMPTY", "POINT (0 1)"), crs = 4326)
+  wkb <- as_wkb(c("POINT EMPTY", "POINT (0 1)", NA), crs = 4326)
+  wkt <- as_wkt(c("POINT EMPTY", "POINT (0 1)", NA), crs = 4326)
 
   expect_equal(sf::st_as_sf(wkb), sf)
   expect_equal(sf::st_as_sfc(wkb), sfc)
@@ -123,12 +130,12 @@ test_that("conversion to sf works", {
   expect_equal(sf::st_as_sfc(wkt), sfc)
 
   # xy
-  expect_equal(sf::st_as_sf(xy(c(NA, 0), c(NA, 1), crs = 4326)), sf)
-  expect_equal(sf::st_as_sfc(xy(c(NA, 0), c(NA, 1), crs = 4326)), sfc)
+  expect_equal(sf::st_as_sf(xy(c(NA, 0, NA), c(NA, 1, NA), crs = 4326)), sf)
+  expect_equal(sf::st_as_sfc(xy(c(NA, 0, NA), c(NA, 1, NA), crs = 4326)), sfc)
 
   # xy with all !is.na() uses faster sf conversion with coords
-  expect_equal(sf::st_as_sf(xy(0, 1, crs = 4326)), sf[-1, , drop = FALSE])
-  expect_equal(sf::st_as_sfc(xy(0, 1, crs = 4326)), sfc[-1])
+  expect_equal(sf::st_as_sf(xy(0, 1, crs = 4326)), sf[2,, , drop = FALSE])
+  expect_equal(sf::st_as_sfc(xy(0, 1, crs = 4326)), sfc[2])
 
   # rct can only generate rectangles
   expect_equal(
@@ -156,6 +163,23 @@ test_that("conversion to sf works", {
   expect_equal(
     as_rct(sf::st_bbox(sf::st_as_sf(crc(1, 2, 3)))),
     rct(-2, -1, 4, 5)
+  )
+
+  # grid objects
+  grid <- grd(nx = 1, ny = 1, type = "centers")
+  wk_crs(grid) <- sf::st_crs("OGC:CRS84")
+  expect_identical(
+    sf::st_as_sfc(grid),
+    sf::st_sfc(sf::st_point(c(0.5, 0.5)), crs = sf::st_crs("OGC:CRS84"))
+  )
+
+  expect_identical(
+    sf::st_as_sf(grid),
+    sf::st_as_sf(
+      data.frame(
+        geometry = sf::st_sfc(sf::st_point(c(0.5, 0.5)), crs = sf::st_crs("OGC:CRS84"))
+      )
+    )
   )
 })
 
@@ -257,6 +281,9 @@ test_that("st_geometry() methods are defined for wk objects", {
   expect_identical(sf::st_geometry(xy()), sf::st_as_sfc(xy()))
   expect_identical(sf::st_geometry(rct()), sf::st_as_sfc(rct()))
   expect_identical(sf::st_geometry(crc()), sf::st_as_sfc(crc()))
+
+  grid <- grd(nx = 1, ny = 1, type = "centers")
+  expect_identical(sf::st_geometry(grid), sf::st_as_sfc(grid))
 })
 
 test_that("st_bbox() methods are defined for wk objects", {
@@ -270,4 +297,53 @@ test_that("st_bbox() methods are defined for wk objects", {
   expect_identical(sf::st_bbox(as_xy(wk_vertices(sf_obj))), bbox_obj)
   expect_identical(sf::st_bbox(rct(0, 1, 2, 3, crs = 32620)), bbox_obj)
   expect_identical(sf::st_bbox(crc(1, 2, 1, crs = 32620)), bbox_obj)
+
+  grid <- grd(nx = 1, ny = 1, type = "centers")
+  wk_crs(grid) <- sf::st_crs("OGC:CRS84")
+  expect_identical(
+    sf::st_bbox(grid),
+    sf::st_bbox(
+      sf::st_as_sfc(rct(0.5, 0.5, 0.5, 0.5, crs = sf::st_crs("OGC:CRS84")))
+    )
+  )
+})
+
+test_that("st_crs() methods are defined for wk objects", {
+  skip_if_not_installed("sf")
+
+  sf_obj <- sf::st_as_sfc("LINESTRING (0 1, 2 3)", crs = 32620)
+  crs_obj <- sf::st_crs(sf_obj)
+
+  expect_identical(sf::st_crs(as_wkb(sf_obj)), crs_obj)
+  expect_identical(sf::st_crs(as_wkt(sf_obj)), crs_obj)
+  expect_identical(sf::st_crs(as_xy(wk_vertices(sf_obj))), crs_obj)
+  expect_identical(sf::st_crs(rct(0, 1, 2, 3, crs = 32620)), crs_obj)
+  expect_identical(sf::st_crs(crc(1, 2, 1, crs = 32620)), crs_obj)
+
+  grid <- grd(nx = 1, ny = 1, type = "centers")
+  wk_crs(grid) <- sf::st_crs("OGC:CRS84")
+  expect_identical(
+    sf::st_crs(grid),
+    sf::st_crs("OGC:CRS84")
+  )
+})
+
+test_that("st_crs<-() methods are defined for wk objects", {
+  skip_if_not_installed("sf")
+
+  sf_obj <- sf::st_as_sfc("LINESTRING (0 1, 2 3)")
+  crs_obj <- sf::st_crs(32620)
+
+  expect_identical(wk_crs(sf::st_set_crs(as_wkb(sf_obj), 32620)), crs_obj)
+  expect_identical(wk_crs(sf::st_set_crs(as_wkt(sf_obj), 32620)), crs_obj)
+  expect_identical(wk_crs(sf::st_set_crs(as_xy(wk_vertices(sf_obj)), 32620)), crs_obj)
+  expect_identical(wk_crs(sf::st_set_crs(rct(0, 1, 2, 3), 32620)), crs_obj)
+  expect_identical(wk_crs(sf::st_set_crs(crc(1, 2, 1), 32620)), crs_obj)
+
+  grid <- grd(nx = 1, ny = 1, type = "centers")
+  sf::st_crs(grid) <- sf::st_crs("OGC:CRS84")
+  expect_identical(
+    sf::st_crs(grid),
+    sf::st_crs("OGC:CRS84")
+  )
 })

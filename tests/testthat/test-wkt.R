@@ -13,8 +13,7 @@ test_that("wkt class works", {
   expect_error(wkt("NOPE"), "Encountered 1 parse problem")
   expect_error(wkt(rep("NOPE", 10)), "Encountered 10 parse problems")
   expect_error(validate_wk_wkt(list()), "must be of type character")
-  # See #123...validate_wk_wkt() is used in CRAN s2 on a raw character vector
-  # expect_error(validate_wk_wkt(""), "must inherit from")
+  expect_error(validate_wk_wkt(""), "must inherit from")
 
   expect_s3_class(x[1], "wk_wkt")
   expect_identical(x[[1]], x[1])
@@ -91,4 +90,13 @@ test_that("as_wkt() propagates geodesic", {
   x <- as_wkt("POINT (1 2)", geodesic = TRUE)
   expect_true(wk_is_geodesic(x))
   expect_true(wk_is_geodesic(as_wkt(as_wkb(wkt("POINT (1 2)", geodesic = TRUE)))))
+})
+
+test_that("examples as wkt roundtrip", {
+  for (which in names(wk_example_wkt)) {
+    expect_identical(
+      wk_handle(wk_example(!!which, crs = NULL), wkt_writer()),
+      wk_example(!!which, crs = NULL)
+    )
+  }
 })

@@ -9,7 +9,7 @@ public:
   SEXP result;
   std::stringstream out;
   std::string current_item;
-  std::vector<const wk_meta_t*> stack;
+  std::vector<wk_meta_t> stack;
   R_xlen_t feat_id;
 
   WKTWriterHandler(int precision, bool trim) {
@@ -78,8 +78,8 @@ public:
   }
 
   bool isNestingCollection() {
-    return this->stack.size() > 0 &&
-      (this->stack[this->stack.size() - 1]->geometry_type == WK_GEOMETRYCOLLECTION);
+    return !this->stack.empty() &&
+      (this->stack.back().geometry_type == WK_GEOMETRYCOLLECTION);
   }
 
   int vector_start(const wk_vector_meta_t* meta) {
@@ -142,11 +142,11 @@ public:
             return this->error(err.str().c_str());
         }
 
-        if ((meta->size != 0) &&(meta->flags & WK_FLAG_HAS_Z) && (meta->flags & WK_FLAG_HAS_M)) {
+        if ((meta->flags & WK_FLAG_HAS_Z) && (meta->flags & WK_FLAG_HAS_M)) {
             out << "ZM ";
-        } else if ((meta->size != 0) && (meta->flags & WK_FLAG_HAS_Z)) {
+        } else if ((meta->flags & WK_FLAG_HAS_Z)) {
             out << "Z ";
-        } else if ((meta->size != 0) && (meta->flags & WK_FLAG_HAS_M)) {
+        } else if ((meta->flags & WK_FLAG_HAS_M)) {
             out << "M ";
         }
     }
@@ -157,7 +157,7 @@ public:
       out << "(";
     }
 
-    this->stack.push_back(meta);
+    this->stack.push_back(*meta);
     return WK_CONTINUE;
   }
 
@@ -165,7 +165,7 @@ public:
     if (ring_id > 0) {
       out << ", ";
     }
-    
+
     out << "(";
     return WK_CONTINUE;
   }
@@ -229,9 +229,9 @@ public:
 
 class WKTFormatHandler: public WKTWriterHandler {
 public:
-  WKTFormatHandler(int precision, bool trim, int max_coords): 
-    WKTWriterHandler(precision, trim), 
-    current_coords(0), 
+  WKTFormatHandler(int precision, bool trim, int max_coords):
+    WKTWriterHandler(precision, trim),
+    current_coords(0),
     max_coords(max_coords) {}
 
   int feature_start(const wk_vector_meta_t* meta, R_xlen_t feat_id) {
