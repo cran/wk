@@ -1,7 +1,7 @@
-4843665398d238ccb0ce0e9fb9014ef8 *DESCRIPTION
+63bd179b16fb73f2c334ac475678afb7 *DESCRIPTION
 3af0d5f6726a14ed40722905f3202a79 *LICENSE
 9b93ae0bf8f2cf1dbbc551aed5f6432e *NAMESPACE
-912277ffe2f9255bb3ffbbc20f4b249d *NEWS.md
+c71d23e4bf3f94b3b03e6cfcae613ab1 *NEWS.md
 07229ca016aac31aab432a2ebc28157f *R/affine.R
 d0e366211810d795520cd57940cef4b8 *R/bbox.R
 f8335a2d3ff1abdf1d249b2640197ca0 *R/chunk.R
@@ -46,7 +46,7 @@ e8bbc21f285a4ec31386054e381d3c46 *R/utils.R
 7e1ae87cffc204b5da2fcb68d720d287 *R/wk-crs.R
 ff67a2aa214f800b44d1f4c70888484d *R/wk-package.R
 289479d91204317f19b4ab8c9ab4b04d *R/wk-rcrd.R
-f1c6f6733a3a6ea2f5d4312d6ae4e341 *R/wk-vctr.R
+319bb59dffd856b03a47e7c005ce7105 *R/wk-vctr.R
 a39beb279063ebcc5c1a503079c435d6 *R/wkb-writer.R
 298513922a38c53799e6de020febbcd8 *R/wkb.R
 64f8f59370841ab7cb51012a14baca05 *R/wkt-writer.R
@@ -86,7 +86,7 @@ d0081437b76adebd91be0f8e2aa3f617 *man/plot.wk_grd_xy.Rd
 dde2f79536dc45098edafbcc9098581b *man/rct.Rd
 db8f8bb3f42b420c2ae77a3c13721ad8 *man/rct_xmin.Rd
 6ddc9c905a30ec55cb87b0b03212d76b *man/vctrs-methods.Rd
-c3379cd338ef96af2f693b2d4a35a6a0 *man/wk-package.Rd
+2adad007eae2e8be341fce9bca8a80f7 *man/wk-package.Rd
 afc0a306c05612dd2b1f536372a86014 *man/wk_bbox.Rd
 21babeb1ff9c52f534c5ea492feb8c9e *man/wk_chunk_strategy_single.Rd
 a12ae9ed6ca4faec7de2e04f768528a3 *man/wk_count.Rd
@@ -150,13 +150,13 @@ b20bb632aa0b5fb894810983cc7385ee *src/make-linestring-filter.c
 271c4e1f7607d5b16d492862e1fcf5ee *src/transform.c
 fe1d11373138bad041fe09970b54175f *src/vctr.c
 bf034ab7a1cd8c8cf50da8dddcd20707 *src/vertex-filter.c
-35f216012b123a26eb969c6518161936 *src/void-handler.c
+2011f125e830b2d1e565931b2fe12971 *src/void-handler.c
 3ff04996080488941707e8fd75d50d02 *src/wk-v1.c
 1a101543e35b4cb1580bc075dafca77b *src/wkb-writer.c
 b6cda253afd234f4a35b60e53a32856f *src/wkt-writer.cpp
 374c0ba061a11dd339efe7b886b7da6c *src/xy-writer.c
 b17060e2f3f82fabb10c17b68e310237 *tests/testthat.R
-e50c643b572e729c50846c8e96a09e76 *tests/testthat/Rplots.pdf
+4b582824dfb229645a07636bde413b1c *tests/testthat/Rplots.pdf
 b57e570ebc04b62c0a97647c7cc64f83 *tests/testthat/test-affine.R
 7390227c225c1c188630852ff0d3ade2 *tests/testthat/test-bbox.R
 3db796ba859e5e04b8a95f633aba286f *tests/testthat/test-chunk.R

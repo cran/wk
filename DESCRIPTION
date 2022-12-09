@@ -1,6 +1,6 @@
 Package: wk
 Title: Lightweight Well-Known Geometry Parsing
-Version: 0.7.0
+Version: 0.7.1
 Authors@R: 
     c(
       person(given = "Dewey",
@@ -20,8 +20,8 @@ Description: Provides a minimal R and C++ API for parsing
   geometries to and from R-native formats. 
   Well-known binary is compact
   and fast to parse; well-known text is human-readable
-  and is useful for writing tests. These formats are only
-  useful in R if the information they contain can be 
+  and is useful for writing tests. These formats are
+  useful in R only if the information they contain can be 
   accessed in R, for which high-performance functions 
   are provided here.
 License: MIT + file LICENSE
@@ -36,8 +36,8 @@ Config/testthat/edition: 3
 Depends: R (>= 2.10)
 LazyData: true
 NeedsCompilation: yes
-Packaged: 2022-10-13 02:53:56 UTC; deweydunnington
+Packaged: 2022-12-09 16:47:20 UTC; deweydunnington
 Author: Dewey Dunnington [aut, cre] (<https://orcid.org/0000-0002-9415-4582>),
   Edzer Pebesma [aut] (<https://orcid.org/0000-0001-8049-7069>)
 Repository: CRAN
-Date/Publication: 2022-10-13 03:30:02 UTC
+Date/Publication: 2022-12-09 19:20:02 UTC
