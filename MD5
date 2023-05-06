@@ -1,7 +1,7 @@
-9184e67614585dff9759ceb4500b3a1d *DESCRIPTION
+ad8da7a0dfb45d6b726492a6865b9c9f *DESCRIPTION
 3af0d5f6726a14ed40722905f3202a79 *LICENSE
 9b93ae0bf8f2cf1dbbc551aed5f6432e *NAMESPACE
-3598748bf733f502d18d3df7fe0d2462 *NEWS.md
+3c5e5a4708ed21085f0244707d689fe1 *NEWS.md
 07229ca016aac31aab432a2ebc28157f *R/affine.R
 d0e366211810d795520cd57940cef4b8 *R/bbox.R
 f8335a2d3ff1abdf1d249b2640197ca0 *R/chunk.R
@@ -40,7 +40,7 @@ f4137c112b283959718fcf8ef7a731cc *R/set.R
 aa3c64ceaaf1afa96daa60ea5f13e635 *R/sfc-writer.R
 db01722e2087826a79be5c4aa9254401 *R/transform.R
 d436efe06000782bedf9d3ec9130184e *R/translate.R
-e8bbc21f285a4ec31386054e381d3c46 *R/utils.R
+d808153a6a52b0ef7dbc332d1f27b48e *R/utils.R
 4337ddd85006d60460a07fa38391b887 *R/vertex-filter.R
 8a5ff3cbb45bf9cb1df9be3e7c0a1398 *R/void.R
 7e1ae87cffc204b5da2fcb68d720d287 *R/wk-crs.R
@@ -156,7 +156,7 @@ bf034ab7a1cd8c8cf50da8dddcd20707 *src/vertex-filter.c
 9f8b4367b4c01f2c274cec7d75e53e2e *src/wkt-writer.cpp
 374c0ba061a11dd339efe7b886b7da6c *src/xy-writer.c
 b17060e2f3f82fabb10c17b68e310237 *tests/testthat.R
-a0d684f00074343e7d50aa739950bcbe *tests/testthat/Rplots.pdf
+90714874923655b8c0c466bfdb4289dc *tests/testthat/Rplots.pdf
 b57e570ebc04b62c0a97647c7cc64f83 *tests/testthat/test-affine.R
 7390227c225c1c188630852ff0d3ade2 *tests/testthat/test-bbox.R
 3db796ba859e5e04b8a95f633aba286f *tests/testthat/test-chunk.R
@@ -172,7 +172,7 @@ f1e610399aaac5f50f18b98d899b13f8 *tests/testthat/test-grd-extract.R
 34e6678ab7cb63cbe9b8094541622f03 *tests/testthat/test-grd-handle.R
 f7bcfa980daf00c1c31a6cf2215aadb3 *tests/testthat/test-grd-plot.R
 d41d8cd98f00b204e9800998ecf8427e *tests/testthat/test-grd-snap.R
-3cbe8b9c67a6c104952fc280ec23507a *tests/testthat/test-grd-subset.R
+46c1f8522df6df283d02e078b8566d97 *tests/testthat/test-grd-subset.R
 c80e213aecc375514145b96c0667a1b3 *tests/testthat/test-grd-tile.R
 805648987bc7573ec5a3342140244bd0 *tests/testthat/test-grd.R
 5dbfd3fe3296a47ec4d8f7db5c80776f *tests/testthat/test-handle-crc.R
@@ -186,13 +186,13 @@ b6e101d8d5e0479019b0c4f73764a057 *tests/testthat/test-handler.R
 e2cc3d9c20130454d16c1440442b8a1d *tests/testthat/test-make.R
 1796c3d8c0518e5b6336bee1070273de *tests/testthat/test-meta.R
 edfe9ddd44a784ab5cd77ce5e66274b9 *tests/testthat/test-pkg-readr.R
-11dd8570ff4d6c3336189e5c22002ee8 *tests/testthat/test-pkg-sf.R
+18419a826d6517bf0ab989f671d898ea *tests/testthat/test-pkg-sf.R
 ea577734b5710a0db5141cb2c5582035 *tests/testthat/test-pkg-vctrs.R
 149a73e07c14b2b758ad9d95dd22ee94 *tests/testthat/test-plot.R
 8dbaeb61c3170d66455cc7dede88755d *tests/testthat/test-problems.R
 73cd1968e78e28fb602937c8acc89934 *tests/testthat/test-rct.R
 b02cdbee1658aa72c93c8484c5b03a4e *tests/testthat/test-set.R
-588fb2843406e11ff73b31ab9e706eb0 *tests/testthat/test-sfc-writer.R
+9e4288c155f2f9b6ce7255e2c03b9a19 *tests/testthat/test-sfc-writer.R
 0d2d8e3be93e48bc34e69b3c074c4512 *tests/testthat/test-transform.R
 10c6beb5a16b70d562e4c0f1108642c4 *tests/testthat/test-translate.R
 a9872cde8c76036fa50ee0036f6ae9b4 *tests/testthat/test-utils.R
