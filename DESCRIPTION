@@ -1,6 +1,6 @@
 Package: wk
 Title: Lightweight Well-Known Geometry Parsing
-Version: 0.7.3
+Version: 0.8.0
 Authors@R: 
     c(
       person(given = "Dewey",
@@ -12,17 +12,21 @@ Authors@R:
               family = "Pebesma",
               role = c("aut"),
               email = "edzer.pebesma@uni-muenster.de",
-              comment = c(ORCID = "0000-0001-8049-7069"))
+              comment = c(ORCID = "0000-0001-8049-7069")),
+      person(given = "Anthony",
+             family = "North",
+             email = "anthony.jl.north@gmail.com",
+             role = c("ctb"))
     )
 Maintainer: Dewey Dunnington <dewey@fishandwhistle.net>
 Description: Provides a minimal R and C++ API for parsing
   well-known binary and well-known text representation of
-  geometries to and from R-native formats. 
+  geometries to and from R-native formats.
   Well-known binary is compact
   and fast to parse; well-known text is human-readable
   and is useful for writing tests. These formats are
-  useful in R only if the information they contain can be 
-  accessed in R, for which high-performance functions 
+  useful in R only if the information they contain can be
+  accessed in R, for which high-performance functions
   are provided here.
 License: MIT + file LICENSE
 Encoding: UTF-8
@@ -35,8 +39,9 @@ Config/testthat/edition: 3
 Depends: R (>= 2.10)
 LazyData: true
 NeedsCompilation: yes
-Packaged: 2023-05-06 22:23:23 UTC; deweydunnington
+Packaged: 2023-08-25 02:13:28 UTC; deweydunnington
 Author: Dewey Dunnington [aut, cre] (<https://orcid.org/0000-0002-9415-4582>),
-  Edzer Pebesma [aut] (<https://orcid.org/0000-0001-8049-7069>)
+  Edzer Pebesma [aut] (<https://orcid.org/0000-0001-8049-7069>),
+  Anthony North [ctb]
 Repository: CRAN
-Date/Publication: 2023-05-06 23:00:02 UTC
+Date/Publication: 2023-08-25 10:50:02 UTC

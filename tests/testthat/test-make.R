@@ -283,9 +283,95 @@ test_that("wk_collection() works", {
   expect_error(wk_collection(new_wk_wkt("POINT ENTPY")), "EMPTY")
 })
 
+test_that("wk_collection() propagates attributes", {
+  expect_identical(
+    wk_collection(
+      wkt("LINESTRING ZM (0 0 0 0, 1 0 0 0)", crs = 1234, geodesic = TRUE),
+      wk_geometry_type("multilinestring")
+    ),
+    wkt("MULTILINESTRING ZM ((0 0 0 0, 1 0 0 0))", crs = 1234, geodesic = TRUE)
+  )
+})
+
 test_that("wk_collection_filter() errors for handlers that return WK_ABORT_FEATURE", {
   expect_error(
     wk_handle(wkt("POINT (0 1)"), wk_collection_filter(wk_meta_handler())),
     "does not support WK_ABORT_FEATURE"
+  )
+})
+
+test_that("wk_collection() works with sfc", {
+  skip_if_not_installed("sf")
+
+  points_xy <- xy(1:64, 1:64)
+  points_sfc <- wk_handle(
+    points_xy,
+    sfc_writer()
+  )
+
+  expect_identical(
+    wk_collection(points_sfc, feature_id = rep(1:2, each = 32)),
+    wk_handle(
+      wk_collection(points_xy, feature_id = rep(1:2, each = 32)),
+      sfc_writer()
+    )
+  )
+
+  expect_identical(
+    wk_collection(points_sfc, wk_geometry_type("multipoint")),
+    wk_handle(
+      wk_collection(points_xy, wk_geometry_type("multipoint")),
+      sfc_writer()
+    )
+  )
+
+  lines_wkb <- as_wkb(wkt(rep("LINESTRING (0 0, 1 1)", 32)))
+  lines_sfc <- wk_handle(
+    lines_wkb,
+    sfc_writer()
+  )
+
+  expect_identical(
+    wk_collection(lines_sfc, wk_geometry_type("multilinestring")),
+    wk_handle(
+      wk_collection(lines_wkb, wk_geometry_type("multilinestring")),
+      sfc_writer()
+    )
+  )
+
+  polygons_wkb <- as_wkb(wkt(rep("POLYGON ((0 0, 0 1, 1 0, 0 0))", 32)))
+  polygons_sfc <- wk_handle(
+    polygons_wkb,
+    sfc_writer()
+  )
+
+  expect_identical(
+    wk_collection(polygons_sfc, wk_geometry_type("multipolygon")),
+    wk_handle(
+      wk_collection(polygons_wkb, wk_geometry_type("multipolygon")),
+      sfc_writer()
+    )
+  )
+
+  geometries_wkb <- c(as_wkb(points_xy), lines_wkb, polygons_wkb)
+  geometries_sfc <- wk_handle(geometries_wkb, sfc_writer())
+
+  expect_identical(
+    wk_collection(geometries_sfc),
+    wk_handle(
+      wk_collection(geometries_wkb),
+      sfc_writer()
+    )
+  )
+
+  # test case from gh #182
+  multipoint_sfc <- sf::st_sfc(
+    sf::st_multipoint(matrix(runif(10, -90, 90), ncol = 2))
+  )
+
+  expect_no_error(
+    suppressMessages(
+      capture_output(print(wk_collection(multipoint_sfc)))
+    )
   )
 })
