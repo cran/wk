@@ -1,7 +1,7 @@
-16650e9b28e34171756b65d7a27fc98c *DESCRIPTION
+37bde104e5c396d25d2077953b1a6bef *DESCRIPTION
 3af0d5f6726a14ed40722905f3202a79 *LICENSE
-01d50f827b7f47edcdf6681d52fa570d *NAMESPACE
-857e49d189989b516b383690374f6ac6 *NEWS.md
+6ebe38fa2f6dfca1c90eec221ee3f064 *NAMESPACE
+2e2e91150144a770e40baff91acb1aba *NEWS.md
 07229ca016aac31aab432a2ebc28157f *R/affine.R
 d0e366211810d795520cd57940cef4b8 *R/bbox.R
 f8335a2d3ff1abdf1d249b2640197ca0 *R/chunk.R
@@ -32,7 +32,7 @@ e16f95228fcd18484647f402131e4eec *R/handler.R
 f46d3863112f207ea7b4066287dd60ff *R/meta.R
 3ba323043c80ddd8bff259009bdec23f *R/orient-filter.R
 331ae708a3ec5204c17663878e9376ea *R/pkg-readr.R
-9709decbf833425d87b2e1e660d14110 *R/pkg-sf.R
+022aa4cd98145994f4ca27f0f69d246e *R/pkg-sf.R
 95eb33eb301d9d601ab94c5ee522356d *R/pkg-vctrs.R
 da6027305ca3365ee1fd40da8a847651 *R/plot.R
 ff2b3478976082700958ad1e7785d630 *R/problems.R
@@ -141,7 +141,7 @@ b50f2431d4b67f8206ccba6972d114e7 *src/handle-xy.c
 ae74d0dfe5f2ad66eb4414b23f42d333 *src/identity-filter.c
 d1159a0d3924943f6566450e20aaa117 *src/init.c
 0e062e53e40472dfb0bc34e8161f4fd1 *src/internal/buffered-reader.hpp
-a4b55ab3a13ef91ae98585a3a1b1c5be *src/internal/fast_float/fast_float.h
+da818a18843126f2d8304d6c5984fece *src/internal/fast_float/fast_float.h
 91b01810f7ce7a39f6fe67d479a973e9 *src/internal/wk-v1-handler.hpp
 d594b5e13ecefc43c7c4eae8a43697b5 *src/make-collection-filter.c
 232a53e2020039cd596a3f5ac13ac909 *src/make-linestring-filter.c
@@ -154,7 +154,7 @@ ee913106aa3085f3ecd654561f80cdf0 *src/sfc-writer.c
 41f28bc033264f1af5ab47807e2b26ba *src/trans-affine.c
 7b308e6ae2ee76dec2759d4b114d335e *src/trans-explicit.c
 70c44dd5a3b52914c79d9ac7416b6ad3 *src/trans-set.c
-0ddf4130430a991d07cdc7a3359d6a15 *src/transform.c
+88af13f591c569f570d92e4e8a86dfdf *src/transform.c
 836e248b39cad289850d20a62b309967 *src/vctr.c
 d3ee0ead0276252e5bd18a8afa82f9ae *src/vertex-filter.c
 412c90f1922b6c988750c3e2ec4acf9e *src/void-handler.c
@@ -194,7 +194,7 @@ ff01b99195b3df6dd61186bd62820de6 *tests/testthat/test-make.R
 2f4e5f768714b34e7f71dd0700a824c6 *tests/testthat/test-meta.R
 0bf6ba1629deeef81160c8ccac11dba1 *tests/testthat/test-orient.R
 edfe9ddd44a784ab5cd77ce5e66274b9 *tests/testthat/test-pkg-readr.R
-aee563c2b125c9d74cd65a82a33956ac *tests/testthat/test-pkg-sf.R
+7b60daa3391bb4f2b5a190d89d0d36b0 *tests/testthat/test-pkg-sf.R
 ea577734b5710a0db5141cb2c5582035 *tests/testthat/test-pkg-vctrs.R
 149a73e07c14b2b758ad9d95dd22ee94 *tests/testthat/test-plot.R
 8dbaeb61c3170d66455cc7dede88755d *tests/testthat/test-problems.R
@@ -202,7 +202,7 @@ ea577734b5710a0db5141cb2c5582035 *tests/testthat/test-pkg-vctrs.R
 b02cdbee1658aa72c93c8484c5b03a4e *tests/testthat/test-set.R
 791287cbe80b3cee884495eabd88cd84 *tests/testthat/test-sfc-writer.R
 b79e482eefcd24672db5d638205e3882 *tests/testthat/test-trans_explicit.R
-7a3662335a50f2c3f4802627c757708c *tests/testthat/test-transform.R
+784281813fad912b47d0f6261159bc43 *tests/testthat/test-transform.R
 10c6beb5a16b70d562e4c0f1108642c4 *tests/testthat/test-translate.R
 a9872cde8c76036fa50ee0036f6ae9b4 *tests/testthat/test-utils.R
 8b1b9236768762e597b7e79c8a5d5c22 *tests/testthat/test-vertex-filter.R
