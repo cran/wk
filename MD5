@@ -1,7 +1,7 @@
-37bde104e5c396d25d2077953b1a6bef *DESCRIPTION
+e9e4a8cd2d62eb4937d83099013430c0 *DESCRIPTION
 3af0d5f6726a14ed40722905f3202a79 *LICENSE
 6ebe38fa2f6dfca1c90eec221ee3f064 *NAMESPACE
-2e2e91150144a770e40baff91acb1aba *NEWS.md
+55b9c3f8fe8d37ac91c8872d9824c620 *NEWS.md
 07229ca016aac31aab432a2ebc28157f *R/affine.R
 d0e366211810d795520cd57940cef4b8 *R/bbox.R
 f8335a2d3ff1abdf1d249b2640197ca0 *R/chunk.R
@@ -132,7 +132,7 @@ ed8b9ca3f124ee18e78e731590e1b3eb *man/xy_x.Rd
 421ae4c193b7c1d95bf42652936fdce9 *src/count-handler.c
 13c1f8f9eea5ea86707b5f0c09d4120b *src/debug-filter.c
 6372360eda139ecb9b0cd4007aa93bc0 *src/flatten-filter.c
-33576bc5c3cd4917e13078f86e997516 *src/handle-crc.c
+50c842bb607b4ee7ac9268b2cdbf894a *src/handle-crc.c
 c3dd461233d0989e2e6d076c4bf8f81e *src/handle-rct.c
 5abc2234841d8b5ba8f81d2d10471b5b *src/handle-sfc.c
 0e615488aaadb000136f9c20262af1b9 *src/handle-wkb.c

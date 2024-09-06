@@ -1,3 +1,7 @@
+# wk 0.9.3
+
+- Ensure package compiles with `STRICT_R_HEADERS=1` (#222).
+
 # wk 0.9.2
 
 - Add `wk_crs()` and `wk_set_crs()` methods for `bbox` (#213)
