@@ -1,7 +1,7 @@
-e9e4a8cd2d62eb4937d83099013430c0 *DESCRIPTION
+bd02262db6f3915aa87ff1fcb310ac11 *DESCRIPTION
 3af0d5f6726a14ed40722905f3202a79 *LICENSE
 6ebe38fa2f6dfca1c90eec221ee3f064 *NAMESPACE
-55b9c3f8fe8d37ac91c8872d9824c620 *NEWS.md
+f058d25209e10c79aea9a211493db8de *NEWS.md
 07229ca016aac31aab432a2ebc28157f *R/affine.R
 d0e366211810d795520cd57940cef4b8 *R/bbox.R
 f8335a2d3ff1abdf1d249b2640197ca0 *R/chunk.R
@@ -32,7 +32,7 @@ e16f95228fcd18484647f402131e4eec *R/handler.R
 f46d3863112f207ea7b4066287dd60ff *R/meta.R
 3ba323043c80ddd8bff259009bdec23f *R/orient-filter.R
 331ae708a3ec5204c17663878e9376ea *R/pkg-readr.R
-022aa4cd98145994f4ca27f0f69d246e *R/pkg-sf.R
+25641881d964048e032d119e93624dae *R/pkg-sf.R
 95eb33eb301d9d601ab94c5ee522356d *R/pkg-vctrs.R
 da6027305ca3365ee1fd40da8a847651 *R/plot.R
 ff2b3478976082700958ad1e7785d630 *R/problems.R
@@ -163,7 +163,7 @@ d3ee0ead0276252e5bd18a8afa82f9ae *src/vertex-filter.c
 523aa95d625d37999ee94073a7aecc3e *src/wkt-writer.cpp
 e365829da93629896f37fdf324b53887 *src/xy-writer.c
 b17060e2f3f82fabb10c17b68e310237 *tests/testthat.R
-b55130f8468db0a678d9963b3a89a290 *tests/testthat/Rplots.pdf
+cb15032d7253de96db36d2cd1158d2f4 *tests/testthat/Rplots.pdf
 b57e570ebc04b62c0a97647c7cc64f83 *tests/testthat/test-affine.R
 7390227c225c1c188630852ff0d3ade2 *tests/testthat/test-bbox.R
 3db796ba859e5e04b8a95f633aba286f *tests/testthat/test-chunk.R
@@ -194,7 +194,7 @@ ff01b99195b3df6dd61186bd62820de6 *tests/testthat/test-make.R
 2f4e5f768714b34e7f71dd0700a824c6 *tests/testthat/test-meta.R
 0bf6ba1629deeef81160c8ccac11dba1 *tests/testthat/test-orient.R
 edfe9ddd44a784ab5cd77ce5e66274b9 *tests/testthat/test-pkg-readr.R
-7b60daa3391bb4f2b5a190d89d0d36b0 *tests/testthat/test-pkg-sf.R
+3d69112ac916c8fbbddb461b9793b598 *tests/testthat/test-pkg-sf.R
 ea577734b5710a0db5141cb2c5582035 *tests/testthat/test-pkg-vctrs.R
 149a73e07c14b2b758ad9d95dd22ee94 *tests/testthat/test-plot.R
 8dbaeb61c3170d66455cc7dede88755d *tests/testthat/test-problems.R

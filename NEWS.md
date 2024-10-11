@@ -1,3 +1,7 @@
+# wk 0.9.4
+
+- Ensure package tests pass against sf 1.0-18 (#224, #225).
+
 # wk 0.9.3
 
 - Ensure package compiles with `STRICT_R_HEADERS=1` (#222).
